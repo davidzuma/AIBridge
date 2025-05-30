@@ -2,6 +2,16 @@
 
 Una aplicación web para gestión fiscal con chat inteligente, construida con Next.js, TypeScript, y PostgreSQL.
 
+## 📚 Documentación
+
+Para información detallada sobre configuración, despliegue y desarrollo, consulta la documentación en la carpeta [`docs/`](./docs/):
+
+- **[📋 Estado del Proyecto](./docs/PROJECT_STATUS.md)** - Estado actual y funcionalidades
+- **[🛠️ Configuración del Entorno](./docs/ENVIRONMENT_SETUP.md)** - Guía de configuración completa
+- **[🔐 Configuración de Google OAuth](./docs/GOOGLE_OAUTH_SETUP.md)** - Setup de autenticación
+- **[🚀 Guía de Despliegue en Vercel](./docs/VERCEL_DEPLOYMENT_GUIDE.md)** - Instrucciones de despliegue
+- **[🧹 Resumen de Limpieza](./docs/CLEANUP_SUMMARY.md)** - Historial de optimizaciones
+
 ## Características
 
 - 🔐 Autenticación con Google usando NextAuth
@@ -22,7 +32,7 @@ Una aplicación web para gestión fiscal con chat inteligente, construida con Ne
 - **Autenticación**: NextAuth.js
 - **Despliegue**: Vercel
 
-## Configuración del Proyecto
+## ⚡ Inicio Rápido
 
 ### 1. Instalación
 
@@ -35,14 +45,7 @@ cd mzchat
 npm install
 ```
 
-### 2. Configuración de la Base de Datos
-
-Crea una base de datos PostgreSQL. Recomendamos usar:
-- [Neon](https://neon.tech) (gratuito)
-- [Railway](https://railway.app) (gratuito)
-- [Supabase](https://supabase.com) (gratuito)
-
-### 3. Variables de Entorno
+### 2. Variables de Entorno
 
 Crea un archivo `.env.local` en la raíz del proyecto:
 
@@ -57,38 +60,32 @@ NEXTAUTH_SECRET="tu-nextauth-secret-aleatorio"
 # Google OAuth
 GOOGLE_CLIENT_ID="tu-google-client-id"
 GOOGLE_CLIENT_SECRET="tu-google-client-secret"
+
+# OpenAI (opcional)
+OPENAI_API_KEY="tu-openai-api-key"
 ```
 
-### 4. Configuración de Google OAuth
-
-1. Ve a [Google Cloud Console](https://console.cloud.google.com/)
-2. Crea un nuevo proyecto o selecciona uno existente 
-3. Habilita la API de Google OAuth2
-4. Crea credenciales OAuth 2.0:
-   - Tipo: Aplicación web
-   - URI de redirección autorizada: `http://localhost:3000/api/auth/callback/google`
-   - Para producción: `https://tu-dominio.com/api/auth/callback/google`
-5. Copia el Client ID y Client Secret a tu archivo `.env.local`
-
-### 5. Configuración de la Base de Datos
+### 3. Configuración de Base de Datos
 
 ```bash
-# Ejecutar migraciones
+# Configurar la base de datos
 npx prisma db push
 
-# (Opcional) Generar el cliente Prisma
-npx prisma generate
+# Ejecutar en desarrollo
+npm run dev
 ```
 
-### 6. Crear un Usuario Revisor
+### 4. Configuración Adicional
 
-Para crear un usuario con rol de revisor, primero inicia sesión normalmente, luego ejecuta en la base de datos:
+Para configuración detallada incluyendo Google OAuth, base de datos en producción, y despliegue, consulta la **[documentación completa](./docs/)**.
 
-```sql
-UPDATE "User" SET role = 'revisor' WHERE email = 'tu-email@ejemplo.com';
+Para otorgar estado premium a un usuario:
+
+```bash
+npm run setup:premium
 ```
 
-### 7. Ejecutar en Desarrollo
+### 8. Ejecutar en Desarrollo
 
 ```bash
 npm run dev
@@ -99,86 +96,61 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 ## Estructura del Proyecto
 
 ```
-src/
-├── app/                    # App Router de Next.js
-│   ├── api/               # API Routes
-│   │   ├── auth/          # NextAuth endpoints
-│   │   ├── chats/         # API de chats de usuarios
-│   │   └── admin/         # API de administración
-│   ├── usuario/           # Página de usuarios
-│   ├── revisor/           # Página de revisores
-│   ├── layout.tsx         # Layout principal
-│   └── page.tsx           # Página de inicio
-├── components/            # Componentes reutilizables
-├── lib/                   # Utilidades y configuraciones
-│   ├── auth.ts           # Configuración de NextAuth
-│   └── prisma.ts         # Cliente de Prisma
-└── types/                # Definiciones de tipos TypeScript
+## 🏗️ Estructura del Proyecto
+
+```
+mzchat/
+├── docs/                  # 📚 Documentación completa
+├── src/
+│   ├── app/              # 🏠 Páginas y API routes (Next.js App Router)
+│   │   ├── api/          # 🔌 API endpoints
+│   │   ├── usuario/      # 👤 Dashboard de usuarios
+│   │   ├── revisor/      # 👨‍💼 Dashboard de revisores
+│   │   └── pricing/      # 💰 Página de precios
+│   ├── components/       # 🧩 Componentes reutilizables
+│   ├── lib/             # 🛠️ Utilidades y configuraciones
+│   └── types/           # 📝 Definiciones de tipos TypeScript
+├── prisma/              # 🗄️ Esquema de base de datos
+└── setup-*.js           # ⚙️ Scripts de configuración
 ```
 
-## Funcionalidades
+## ✨ Funcionalidades Principales
 
-### Para Usuarios Normales (`/usuario`)
-- ✅ Chat para realizar consultas fiscales
-- ✅ Historial de consultas con estados
-- ✅ Acceso a recursos y documentos
-- ✅ FAQs y calculadoras
+### 👤 Para Usuarios
+- 💬 Chat para consultas fiscales con IA
+- 📋 Historial de consultas
+- 🏆 Sistema premium con validación humana
+- 📊 Dashboard personalizado
 
-### Para Revisores (`/revisor`)
-- ✅ Panel de administración
-- ✅ Lista de todas las consultas
-- ✅ Cambiar estado de consultas (validado/revisión requerida)
-- ✅ Agregar comentarios a las consultas
-- ✅ Estadísticas de consultas
+### 👨‍💼 Para Revisores
+- 🛠️ Panel de administración
+- ✅ Validación de respuestas de IA
+- 💬 Sistema de comentarios
+- 📈 Estadísticas de consultas
 
-## Despliegue en Vercel
+## 🚀 Despliegue
 
-### 1. Preparación
+Para desplegar el proyecto en producción, consulta la **[Guía de Despliegue en Vercel](./docs/VERCEL_DEPLOYMENT_GUIDE.md)** en la documentación.
 
-1. Sube tu código a GitHub
-2. Configura tu base de datos PostgreSQL en producción
+## 🤝 Contribuir
 
-### 2. Desplegar en Vercel
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
 
-1. Ve a [Vercel](https://vercel.com)
-2. Conecta tu repositorio de GitHub
-3. Configura las variables de entorno en Vercel:
-   - `DATABASE_URL`
-   - `NEXTAUTH_URL` (tu dominio de producción)
-   - `NEXTAUTH_SECRET`
-   - `GOOGLE_CLIENT_ID`
-   - `GOOGLE_CLIENT_SECRET`
+## 📞 Soporte
 
-### 3. Configuración Post-Despliegue
+Para soporte técnico, configuración o desarrollo:
 
-1. Actualiza las URIs de redirección en Google OAuth para incluir tu dominio de producción
-2. Ejecuta las migraciones de base de datos:
-   ```bash
-   npx prisma db push
-   ```
+- **📚 Consulta la documentación**: [`docs/`](./docs/)
+- **🐛 Reporta bugs**: Abre un issue en GitHub
+- **💡 Solicita features**: Abre un issue con la etiqueta "enhancement"
 
-## Base de Datos
+---
 
-### Modelos Principales
-
-- **User**: Usuarios del sistema con roles
-- **Chat**: Consultas de los usuarios
-- **Account/Session**: Tablas de NextAuth para autenticación
-
-### Estados de Chat
-
-- `pendiente`: Nueva consulta sin revisar
-- `validado`: Consulta aprobada por un revisor
-- `revision_requerida`: Consulta que necesita más atención
-
-## Scripts Disponibles
-
-```bash
-npm run dev          # Servidor de desarrollo
-npm run build        # Construir para producción
-npm run start        # Servidor de producción
-npm run lint         # Linter de código
-```
+*© 2025 MZ Asesoría - Sistema de consultas Fiscales y Laborales*
 
 ## Despliegue en Vercel
 
