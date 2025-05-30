@@ -62,7 +62,7 @@ GOOGLE_CLIENT_SECRET="tu-google-client-secret"
 ### 4. Configuración de Google OAuth
 
 1. Ve a [Google Cloud Console](https://console.cloud.google.com/)
-2. Crea un nuevo proyecto o selecciona uno existente
+2. Crea un nuevo proyecto o selecciona uno existente 
 3. Habilita la API de Google OAuth2
 4. Crea credenciales OAuth 2.0:
    - Tipo: Aplicación web
