@@ -59,7 +59,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Status inválido" }, { status: 400 })
     }
 
-    const updateData: any = {
+    const updateData: { status: string; reviewerComment: string | null; response?: string } = {
       status,
       reviewerComment: reviewerComment || null,
     }

@@ -13,12 +13,7 @@ interface Chat {
   createdAt: string
 }
 
-interface User {
-  id: string
-  name?: string
-  email: string
-  isPremium?: boolean
-}
+// Removed unused User interface
 
 export default function UsuarioPage() {
   const { data: session, status } = useSession()

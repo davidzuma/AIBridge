@@ -62,7 +62,7 @@ export default function RevisorPage() {
   const updateChat = async (chatId: string, newStatus: string, customResponse?: string) => {
     setIsUpdating(true)
     try {
-      const updateData: any = {
+      const updateData: { chatId: string; status: string; reviewerComment: string | null; response?: string } = {
         chatId,
         status: newStatus,
         reviewerComment: reviewerComment.trim() || null,

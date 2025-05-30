@@ -421,7 +421,7 @@ export default function RevisorPage() {
                     ) : (
                       <div className="bg-gray-50 border border-gray-200 p-4 rounded-md text-center">
                         <p className="text-sm text-gray-500">
-                          Haz clic en "Obtener Sugerencia IA" para recibir un análisis y sugerencia de respuesta para esta consulta.
+                          Haz clic en &quot;Obtener Sugerencia IA&quot; para recibir un análisis y sugerencia de respuesta para esta consulta.
                         </p>
                       </div>
                     )}

@@ -113,7 +113,7 @@ export default function PricingPage() {
 
         {/* Plans Grid */}
         <div className="mt-12 grid lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {plans.map((plan, index) => (
+          {plans.map((plan) => (
             <div
               key={plan.name}
               className={`relative bg-white rounded-2xl shadow-lg ${

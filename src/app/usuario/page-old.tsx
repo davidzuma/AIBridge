@@ -13,20 +13,12 @@ interface Chat {
   createdAt: string
 }
 
-interface User {
-  id: string
-  name?: string
-  email: string
-  isPremium?: boolean
-}
-
 export default function UsuarioPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [chats, setChats] = useState<Chat[]>([])
   const [newMessage, setNewMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [reviewLoading, setReviewLoading] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState("chat")
 
   useEffect(() => {
@@ -79,38 +71,6 @@ export default function UsuarioPage() {
       console.error("Error sending message:", error)
     } finally {
       setIsLoading(false)
-    }
-  }
-
-  const requestHumanReview = async (chatId: string) => {
-    setReviewLoading(chatId)
-    try {
-      const response = await fetch("/api/request-review", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          chatId: chatId,
-        }),
-      })
-
-      if (response.ok) {
-        await fetchChats() // Refresh to show updated status
-      } else {
-        const error = await response.json()
-        alert(error.error || "Error al solicitar revisión humana")
-      }
-    } catch (error) {
-      console.error("Error requesting human review:", error)
-      alert("Error al solicitar revisión humana")
-    } finally {
-      setReviewLoading(null)
-    }
-  }
-      console.error("Error requesting AI response:", error)
-    } finally {
-      setAiLoading(null)
     }
   }
 
@@ -251,28 +211,6 @@ export default function UsuarioPage() {
                         </div>
                         <div className="flex flex-col items-end space-y-2">
                           {getStatusBadge(chat.status)}
-                          {chat.status === "pendiente" && (
-                            <button
-                              onClick={() => requestAiResponse(chat.id)}
-                              disabled={aiLoading === chat.id}
-                              className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-md hover:bg-blue-200 disabled:opacity-50 flex items-center space-x-1"
-                            >
-                              {aiLoading === chat.id ? (
-                                <>
-                                  <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                                  </svg>
-                                  <span>Generando...</span>
-                                </>
-                              ) : (
-                                <>
-                                  <span>🤖</span>
-                                  <span>Respuesta IA</span>
-                                </>
-                              )}
-                            </button>
-                          )}
                         </div>
                       </div>
                       
