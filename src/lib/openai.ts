@@ -31,7 +31,7 @@ export async function generateFiscalResponse(userMessage: string): Promise<strin
     return completion.choices[0]?.message?.content || "Lo siento, no pude generar una respuesta en este momento. Por favor, inténtalo de nuevo.";
   } catch (error) {
     console.error('Error generating OpenAI response:', error);
-    return "Ha ocurrido un error al procesar tu consulta. Un revisor humano la revisará pronto.";
+    return "Ha ocurrido un error al procesar tu consulta. Un profesional la revisará pronto.";
   }
 }
 

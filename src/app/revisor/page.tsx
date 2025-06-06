@@ -94,10 +94,10 @@ export default function RevisorPage() {
   }
 
   const getStatusBadge = (status: string) => {
-    const badges = {
-      ai_respondido: "bg-blue-100 text-blue-800",
-      validado: "bg-green-100 text-green-800",
-      revision_requerida: "bg-orange-100 text-orange-800",
+    const statusMap = {
+      ai_respondido: "status-pending",
+      validado: "status-approved", 
+      revision_requerida: "status-revision",
     }
     const labels = {
       ai_respondido: "Respuesta IA",
@@ -106,7 +106,7 @@ export default function RevisorPage() {
     }
     
     return (
-      <span className={`px-2 py-1 text-xs font-medium rounded-full ${badges[status as keyof typeof badges]}`}>
+      <span className={`status-badge ${statusMap[status as keyof typeof statusMap]}`}>
         {labels[status as keyof typeof labels]}
       </span>
     )
@@ -122,8 +122,11 @@ export default function RevisorPage() {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600 mb-4 mx-auto"></div>
+          <p className="text-gray-600 font-medium">Cargando panel de revisor...</p>
+        </div>
       </div>
     )
   }
@@ -131,23 +134,39 @@ export default function RevisorPage() {
   const statusCounts = getStatusCounts()
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b border-gray-200/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">
-                Panel de Revisor - Solo Usuarios Premium
-              </h1>
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                  Panel de Revisor
+                </h1>
+                <p className="text-sm text-gray-600">Gestión de usuarios Premium</p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">
-                {session?.user?.name} (Revisor)
-              </span>
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm font-medium">
+                    {session?.user?.name?.charAt(0) || 'R'}
+                  </span>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-medium text-gray-900">{session?.user?.name}</p>
+                  <p className="text-xs text-gray-500">Revisor Profesional</p>
+                </div>
+              </div>
               <button
                 onClick={() => signOut()}
-                className="text-sm text-gray-600 hover:text-gray-900"
+                className="btn-secondary text-sm"
               >
                 Cerrar sesión
               </button>
@@ -159,67 +178,61 @@ export default function RevisorPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
+          <div className="card-modern group hover:scale-105 transition-all duration-300">
+            <div className="p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
-                    <span className="text-white font-semibold">{statusCounts.ai_respondido}</span>
+                  <div className="feature-icon bg-gradient-to-r from-blue-500 to-blue-600">
+                    <span className="text-white font-bold text-lg">{statusCounts.ai_respondido}</span>
                   </div>
                 </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">
-                      Respuestas IA Premium
-                    </dt>
-                    <dd className="text-lg font-medium text-gray-900">
-                      Para revisar
-                    </dd>
-                  </dl>
+                <div className="ml-5 flex-1">
+                  <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                    Respuestas IA Premium
+                  </h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Pendientes de revisión profesional
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
+          <div className="card-modern group hover:scale-105 transition-all duration-300">
+            <div className="p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center">
-                    <span className="text-white font-semibold">{statusCounts.revision_requerida}</span>
+                  <div className="feature-icon bg-gradient-to-r from-orange-500 to-orange-600">
+                    <span className="text-white font-bold text-lg">{statusCounts.revision_requerida}</span>
                   </div>
                 </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">
-                      Revisión Solicitada
-                    </dt>
-                    <dd className="text-lg font-medium text-gray-900">
-                      Urgente
-                    </dd>
-                  </dl>
+                <div className="ml-5 flex-1">
+                  <h3 className="text-lg font-semibold text-gray-900 group-hover:text-orange-600 transition-colors">
+                    Revisión Solicitada
+                  </h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Casos que requieren atención urgente
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
+          <div className="card-modern group hover:scale-105 transition-all duration-300">
+            <div className="p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
-                    <span className="text-white font-semibold">{statusCounts.validado}</span>
+                  <div className="feature-icon bg-gradient-to-r from-green-500 to-green-600">
+                    <span className="text-white font-bold text-lg">{statusCounts.validado}</span>
                   </div>
                 </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">
-                      Validadas
-                    </dt>
-                    <dd className="text-lg font-medium text-gray-900">
-                      Completadas
-                    </dd>
-                  </dl>
+                <div className="ml-5 flex-1">
+                  <h3 className="text-lg font-semibold text-gray-900 group-hover:text-green-600 transition-colors">
+                    Validadas
+                  </h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Consultas completadas exitosamente
+                  </p>
                 </div>
               </div>
             </div>
@@ -227,173 +240,237 @@ export default function RevisorPage() {
         </div>
 
         {/* Info Banner */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <span className="text-yellow-400">⭐</span>
-            </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-yellow-800">
-                Solo Usuarios Premium
-              </h3>
-              <p className="mt-1 text-sm text-yellow-700">
-                Este panel muestra únicamente las consultas de usuarios Premium que requieren revisión humana. 
-                Todas las demás consultas son respondidas automáticamente por IA.
-              </p>
+        <div className="card-modern bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200/50 mb-8">
+          <div className="p-6">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+              </div>
+              <div className="ml-4">
+                <h3 className="text-lg font-semibold text-blue-900">
+                  Panel Exclusivo de Usuarios Premium
+                </h3>
+                <p className="mt-2 text-blue-700 leading-relaxed">
+                  Este panel está diseñado específicamente para la revisión profesional de consultas de usuarios Premium. 
+                  Todas las consultas estándar son procesadas automáticamente por nuestro sistema de IA, mientras que 
+                  las consultas Premium reciben atención personalizada de nuestro equipo de expertos.
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Chats List */}
-        <div className="bg-white shadow overflow-hidden sm:rounded-md">
-          <div className="px-4 py-5 sm:px-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900">
-              Consultas Premium para Revisar
-            </h3>
-            <p className="mt-1 max-w-2xl text-sm text-gray-500">
-              Consultas de usuarios Premium que necesitan revisión humana
-            </p>
+        <div className="card-modern">
+          <div className="px-6 py-6 border-b border-gray-200">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900">
+                  Consultas Premium para Revisar
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  Consultas de usuarios Premium que requieren revisión profesional personalizada
+                </p>
+              </div>
+            </div>
           </div>
-          <ul className="divide-y divide-gray-200">
+          <div className="divide-y divide-gray-200">
             {chats.length === 0 ? (
-              <li className="px-4 py-8 text-center text-gray-500">
+              <div className="px-6 py-12 text-center">
                 <div className="flex flex-col items-center">
-                  <span className="text-4xl mb-2">✅</span>
-                  <p>No hay consultas premium pendientes de revisar</p>
-                  <p className="text-xs mt-1">Todas las consultas normales son respondidas automáticamente por IA</p>
+                  <div className="w-16 h-16 bg-gradient-to-r from-green-100 to-emerald-100 rounded-full flex items-center justify-center mb-4">
+                    <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <h4 className="text-lg font-medium text-gray-900 mb-2">
+                    ¡Todo al día!
+                  </h4>
+                  <p className="text-gray-600 max-w-md">
+                    No hay consultas premium pendientes de revisar en este momento.
+                  </p>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Las consultas estándar son procesadas automáticamente por IA
+                  </p>
                 </div>
-              </li>
+              </div>
             ) : (
               chats.map((chat) => (
-                <li key={chat.id} className="px-4 py-4">
-                  <div className="flex items-center justify-between">
+                <div key={chat.id} className="px-6 py-5 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
+                          <span className="text-white font-medium text-sm">
+                            {chat.user.name.charAt(0)}
+                          </span>
+                        </div>
                         <div className="flex-1">
                           <div className="flex items-center space-x-2">
-                            <p className="text-sm font-medium text-gray-900">
-                              {chat.user.name} ({chat.user.email})
-                            </p>
-                            {chat.user.isPremium && (
-                              <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">
-                                ⭐ Premium
-                              </span>
-                            )}
+                            <h4 className="text-base font-semibold text-gray-900">
+                              {chat.user.name}
+                            </h4>
+                            <span className="status-badge status-premium">
+                              Premium
+                            </span>
+                            {getStatusBadge(chat.status)}
                           </div>
-                          <p className="text-sm text-gray-700 mt-1 line-clamp-2">
-                            {chat.content}
-                          </p>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {new Date(chat.createdAt).toLocaleString("es-ES")}
-                          </p>
-                        </div>
-                        <div className="ml-4 flex items-center space-x-3">
-                          {getStatusBadge(chat.status)}
-                          <button
-                            onClick={() => {
-                              setSelectedChat(chat)
-                              setReviewerComment(chat.reviewerComment || "")
-                              setNewResponse(chat.response)
-                            }}
-                            className="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
-                          >
-                            Revisar
-                          </button>
+                          <p className="text-sm text-gray-600">{chat.user.email}</p>
                         </div>
                       </div>
+                      <div className="ml-13">
+                        <p className="text-gray-800 line-clamp-3 leading-relaxed mb-2">
+                          {chat.content}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          📅 {new Date(chat.createdAt).toLocaleString("es-ES")}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="ml-6 flex-shrink-0">
+                      <button
+                        onClick={() => {
+                          setSelectedChat(chat)
+                          setReviewerComment(chat.reviewerComment || "")
+                          setNewResponse(chat.response)
+                        }}
+                        className="btn-primary"
+                      >
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        Revisar
+                      </button>
                     </div>
                   </div>
-                </li>
+                </div>
               ))
             )}
-          </ul>
+          </div>
         </div>
       </div>
 
       {/* Review Modal */}
       {selectedChat && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-10 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
-            <div className="mt-3">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900">
-                  Revisar Consulta Premium
-                </h3>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-start justify-center p-4">
+          <div className="card-modern w-full max-w-4xl my-8 max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              {/* Modal Header */}
+              <div className="flex justify-between items-start mb-6 pb-4 border-b border-gray-200">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900">
+                      Revisar Consulta Premium
+                    </h3>
+                    <p className="text-sm text-gray-600">Revisión profesional personalizada</p>
+                  </div>
+                </div>
                 <div className="flex items-center space-x-2">
-                  {selectedChat.user.isPremium && (
-                    <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-sm rounded-full">
-                      ⭐ Usuario Premium
-                    </span>
-                  )}
+                  <span className="status-badge status-premium">
+                    Usuario Premium
+                  </span>
                   {getStatusBadge(selectedChat.status)}
                 </div>
               </div>
               
               <div className="space-y-6">
                 {/* User Info */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Usuario:
-                  </label>
-                  <p className="text-sm text-gray-900">
-                    {selectedChat.user.name} ({selectedChat.user.email})
-                  </p>
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200/50">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
+                      <span className="text-white font-medium">
+                        {selectedChat.user.name.charAt(0)}
+                      </span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">{selectedChat.user.name}</h4>
+                      <p className="text-sm text-gray-600">{selectedChat.user.email}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        📅 {new Date(selectedChat.createdAt).toLocaleString("es-ES")}
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* User Query */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Consulta:
+                  <label className="block text-sm font-semibold text-gray-900 mb-3">
+                    📝 Consulta del Usuario
                   </label>
-                  <p className="text-sm text-gray-900 bg-gray-50 p-3 rounded">
-                    {selectedChat.content}
-                  </p>
+                  <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                    <p className="text-gray-800 leading-relaxed">
+                      {selectedChat.content}
+                    </p>
+                  </div>
                 </div>
 
                 {/* Current AI Response */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Respuesta actual de IA:
+                  <label className="block text-sm font-semibold text-gray-900 mb-3">
+                    🤖 Respuesta Actual de IA
                   </label>
-                  <div className="bg-blue-50 p-3 rounded border border-blue-200">
-                    <div className="flex items-center mb-2">
-                      <span className="text-blue-800 font-medium text-sm">🤖 Respuesta generada por IA</span>
+                  <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-4">
+                    <div className="flex items-center mb-3">
+                      <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mr-2">
+                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                      </div>
+                      <span className="text-blue-800 font-medium text-sm">Respuesta generada por IA</span>
                     </div>
-                    <p className="text-sm text-blue-900">{selectedChat.response}</p>
+                    <p className="text-blue-900 leading-relaxed">{selectedChat.response}</p>
                   </div>
                 </div>
 
                 {/* New Response (for editing) */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Respuesta revisada (opcional - para sobrescribir la respuesta IA):
+                  <label className="block text-sm font-semibold text-gray-900 mb-3">
+                    ✏️ Respuesta Revisada (Opcional)
                   </label>
                   <textarea
                     value={newResponse}
                     onChange={(e) => setNewResponse(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                    className="modern-input"
                     rows={4}
-                    placeholder="Deja en blanco para mantener la respuesta IA, o escribe una nueva respuesta..."
+                    placeholder="Deja en blanco para mantener la respuesta IA, o escribe una nueva respuesta profesional..."
                   />
+                  <p className="text-xs text-gray-500 mt-2">
+                    💡 Tip: Si modificas la respuesta, esta reemplazará completamente la respuesta de IA
+                  </p>
                 </div>
 
                 {/* Reviewer Comment */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Comentario del revisor (opcional):
+                  <label className="block text-sm font-semibold text-gray-900 mb-3">
+                    💬 Comentario del Revisor (Opcional)
                   </label>
                   <textarea
                     value={reviewerComment}
                     onChange={(e) => setReviewerComment(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                    className="modern-input"
                     rows={3}
-                    placeholder="Agregar comentarios adicionales para el usuario..."
+                    placeholder="Agregar comentarios adicionales, aclaraciones o notas para el usuario..."
                   />
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex space-x-3 pt-6 border-t border-gray-200">
+              <div className="flex flex-col sm:flex-row gap-3 pt-6 mt-6 border-t border-gray-200">
                 <button
                   onClick={() => updateChat(
                     selectedChat.id, 
@@ -401,16 +478,22 @@ export default function RevisorPage() {
                     newResponse !== selectedChat.response ? newResponse : undefined
                   )}
                   disabled={isUpdating}
-                  className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50"
+                  className="btn-primary flex-1 justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isUpdating ? "Actualizando..." : "✓ Validar y Aprobar"}
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                  {isUpdating ? "Procesando..." : "Validar y Aprobar"}
                 </button>
                 <button
                   onClick={() => updateChat(selectedChat.id, "revision_requerida")}
                   disabled={isUpdating}
-                  className="flex-1 bg-orange-600 text-white py-2 px-4 rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50"
+                  className="btn-secondary flex-1 justify-center disabled:opacity-50 disabled:cursor-not-allowed bg-orange-600 hover:bg-orange-700 text-white"
                 >
-                  {isUpdating ? "Actualizando..." : "⚠ Marcar para Más Revisión"}
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.268 15.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                  {isUpdating ? "Procesando..." : "Marcar para Más Revisión"}
                 </button>
                 <button
                   onClick={() => {
@@ -418,8 +501,11 @@ export default function RevisorPage() {
                     setReviewerComment("")
                     setNewResponse("")
                   }}
-                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                  className="btn-secondary flex-1 justify-center"
                 >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                   Cancelar
                 </button>
               </div>

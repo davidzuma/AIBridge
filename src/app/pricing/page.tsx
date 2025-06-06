@@ -70,61 +70,76 @@ export default function PricingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <div className="container-modern py-16">
         {/* Header */}
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl">
-            Planes y Precios
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-sm font-medium mb-6">
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+            </svg>
+            Precios transparentes
+          </div>
+          <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+            <span className="gradient-text">Planes</span> que se adaptan
+            <br />
+            <span className="text-gray-700">a tu negocio</span>
           </h1>
-          <p className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
-            Elige el plan que mejor se adapte a tus necesidades fiscales
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Desde consultas básicas hasta asesoramiento fiscal completo. 
+            Elige la solución perfecta para tus necesidades.
           </p>
         </div>
 
         {/* Toggle Anual/Mensual */}
-        <div className="mt-8 flex justify-center">
-          <div className="bg-white p-1 rounded-lg border border-gray-200">
+        <div className="flex justify-center mb-16">
+          <div className="bg-white/80 backdrop-blur-sm p-2 rounded-2xl border border-gray-200 shadow-lg">
             <button
               onClick={() => setIsAnnual(false)}
-              className={`px-4 py-2 rounded-md transition-colors ${
+              className={`px-6 py-3 rounded-xl font-semibold transition-all ${
                 !isAnnual 
-                  ? "bg-blue-600 text-white" 
-                  : "text-gray-700 hover:text-gray-900"
+                  ? "bg-blue-600 text-white shadow-md transform scale-105" 
+                  : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
               Mensual
             </button>
             <button
               onClick={() => setIsAnnual(true)}
-              className={`px-4 py-2 rounded-md transition-colors ${
+              className={`px-6 py-3 rounded-xl font-semibold transition-all flex items-center space-x-2 ${
                 isAnnual 
-                  ? "bg-blue-600 text-white" 
-                  : "text-gray-700 hover:text-gray-900"
+                  ? "bg-blue-600 text-white shadow-md transform scale-105" 
+                  : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
-              Anual
-              <span className="ml-1 text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                Ahorra 17%
+              <span>Anual</span>
+              <span className="inline-flex items-center px-2 py-1 text-xs font-bold bg-green-100 text-green-800 rounded-full">
+                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+                </svg>
+                17%
               </span>
             </button>
           </div>
         </div>
 
         {/* Plans Grid */}
-        <div className="mt-12 grid lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto mb-20">
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative bg-white rounded-2xl shadow-lg ${
+              className={`relative card-modern overflow-hidden ${
                 plan.popular 
-                  ? "ring-2 ring-blue-600 shadow-xl" 
-                  : "border border-gray-200"
+                  ? "ring-2 ring-blue-500 ring-offset-4 ring-offset-transparent scale-105 lg:scale-110" 
+                  : ""
               }`}
             >
               {plan.popular && (
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                  <span className="bg-blue-600 text-white px-4 py-1 text-sm font-medium rounded-full">
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+                  <span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-bold rounded-full shadow-lg">
+                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
                     Más Popular
                   </span>
                 </div>
@@ -132,32 +147,51 @@ export default function PricingPage() {
 
               <div className="p-8">
                 {/* Plan Header */}
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold text-gray-900">{plan.name}</h3>
-                  <div className="mt-4 flex items-center justify-center">
+                <div className="text-center mb-8">
+                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 ${
+                    plan.popular 
+                      ? "bg-gradient-to-br from-blue-500 to-indigo-600" 
+                      : "bg-gray-100"
+                  }`}>
+                    <svg className={`w-8 h-8 ${plan.popular ? "text-white" : "text-gray-600"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={
+                        plan.popular 
+                          ? "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                          : "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      } />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                  <div className="flex items-center justify-center mb-3">
                     {plan.originalPrice && (
-                      <span className="text-lg text-gray-500 line-through mr-2">
+                      <span className="text-lg text-gray-500 line-through mr-3">
                         {plan.originalPrice}
                       </span>
                     )}
-                    <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
-                    <span className="text-gray-600 ml-2">/{plan.period}</span>
+                    <span className="text-5xl font-bold text-gray-900">{plan.price}</span>
+                    <span className="text-gray-600 ml-2 text-lg">/{plan.period.split(' ')[0]}</span>
                   </div>
-                  <p className="mt-3 text-gray-600">{plan.description}</p>
+                  {plan.period.includes('facturado') && (
+                    <p className="text-sm text-gray-500">{plan.period.split('mes ')[1]}</p>
+                  )}
+                  <p className="text-gray-600 leading-relaxed">{plan.description}</p>
                 </div>
 
                 {/* Features */}
-                <div className="mt-8">
-                  <h4 className="text-sm font-medium text-gray-900 uppercase tracking-wide">
-                    Incluye:
+                <div className="mb-8">
+                  <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4 flex items-center">
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Todo incluido
                   </h4>
-                  <ul className="mt-4 space-y-3">
+                  <ul className="space-y-3">
                     {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-start">
-                        <svg className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <li key={featureIndex} className="flex items-start group">
+                        <svg className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                         </svg>
-                        <span className="text-gray-700">{feature}</span>
+                        <span className="text-gray-700 leading-relaxed">{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -165,17 +199,20 @@ export default function PricingPage() {
 
                 {/* Limitations (solo para plan gratuito) */}
                 {plan.limitations && (
-                  <div className="mt-6">
-                    <h4 className="text-sm font-medium text-gray-900 uppercase tracking-wide">
-                      Limitaciones:
+                  <div className="mb-8">
+                    <h4 className="text-sm font-bold text-amber-700 uppercase tracking-wider mb-4 flex items-center">
+                      <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd"/>
+                      </svg>
+                      Limitaciones
                     </h4>
-                    <ul className="mt-4 space-y-2">
+                    <ul className="space-y-2">
                       {plan.limitations.map((limitation, limitIndex) => (
                         <li key={limitIndex} className="flex items-start">
-                          <svg className="h-5 w-5 text-yellow-500 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd"/>
+                          <svg className="h-4 w-4 text-amber-500 mr-3 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd"/>
                           </svg>
-                          <span className="text-gray-600 text-sm">{limitation}</span>
+                          <span className="text-gray-600 text-sm leading-relaxed">{limitation}</span>
                         </li>
                       ))}
                     </ul>
@@ -183,71 +220,198 @@ export default function PricingPage() {
                 )}
 
                 {/* CTA Button */}
-                <div className="mt-8">
+                <div className="space-y-4">
                   <button
                     onClick={() => handlePlanSelection(plan.name)}
-                    className={`w-full py-3 px-6 rounded-lg font-medium transition-colors ${plan.buttonStyle}`}
+                    className={`w-full py-4 px-6 rounded-xl font-semibold transition-all transform hover:scale-105 hover:-translate-y-1 ${
+                      plan.popular 
+                        ? "btn-primary" 
+                        : "btn-secondary"
+                    }`}
                   >
                     {plan.buttonText}
                   </button>
-                </div>
 
-                {/* Trial Notice for Pro Plan */}
-                {plan.name === "Profesional" && (
-                  <p className="mt-3 text-sm text-gray-500 text-center">
-                    Prueba gratuita de 14 días. Cancela cuando quieras.
-                  </p>
-                )}
+                  {/* Trial Notice for Pro Plan */}
+                  {plan.name === "Profesional" && (
+                    <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Prueba gratuita de 14 días • Cancela cuando quieras</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           ))}
         </div>
 
         {/* FAQ Section */}
-        <div className="mt-16 max-w-3xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
-            Preguntas Frecuentes
-          </h2>
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-2">
-                ¿Puedo cambiar de plan en cualquier momento?
-              </h3>
-              <p className="text-gray-600">
-                Sí, puedes actualizar o degradar tu plan en cualquier momento. Los cambios se aplicarán en tu próximo período de facturación.
-              </p>
+        <div className="mt-20 max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-sm font-medium mb-4">
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Preguntas frecuentes
             </div>
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-2">
-                ¿Qué incluye la prueba gratuita?
-              </h3>
-              <p className="text-gray-600">
-                La prueba gratuita de 14 días incluye acceso completo a todas las funciones del plan Profesional, sin limitaciones.
-              </p>
-            </div>
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-2">
-                ¿Los precios incluyen IVA?
-              </h3>
-              <p className="text-gray-600">
-                Los precios mostrados no incluyen IVA. El IVA se calculará según tu ubicación durante el proceso de pago.
-              </p>
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              <span className="gradient-text">Todo lo que</span>
+              <br />
+              necesitas saber
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Resolvemos las dudas más comunes sobre nuestros planes y servicios
+            </p>
+          </div>
+
+          <div className="grid gap-6">
+            {[
+              {
+                question: "¿Puedo cambiar de plan en cualquier momento?",
+                answer: "Absolutamente. Puedes actualizar o degradar tu plan cuando lo necesites. Si actualizas, tendrás acceso inmediato a las nuevas funciones. Si degradas, los cambios se aplicarán al final del período de facturación actual para que aproveches al máximo lo que ya has pagado."
+              },
+              {
+                question: "¿Qué incluye la prueba gratuita del plan Profesional?",
+                answer: "La prueba gratuita de 14 días te da acceso completo a todas las funciones del plan Profesional: consultas ilimitadas, respuesta en 24 horas, asesoramiento personalizado, chat directo con expertos y todas las herramientas avanzadas. No hay limitaciones ni funciones ocultas."
+              },
+              {
+                question: "¿Los precios incluyen IVA?",
+                answer: "Los precios mostrados son sin IVA. El IVA correspondiente se calculará automáticamente según tu ubicación durante el proceso de pago, cumpliendo con la normativa fiscal europea."
+              },
+              {
+                question: "¿Cómo funciona la respuesta en 24 horas?",
+                answer: "Para usuarios Premium, garantizamos que un experto fiscal revisará y responderá tu consulta en un máximo de 24 horas laborables. Las consultas urgentes suelen recibir respuesta en pocas horas, especialmente durante horario laboral."
+              },
+              {
+                question: "¿Puedo cancelar mi suscripción en cualquier momento?",
+                answer: "Sí, puedes cancelar tu suscripción cuando quieras desde tu panel de usuario. No hay penalizaciones ni comisiones ocultas. Si cancelas, mantendrás acceso a las funciones Premium hasta el final de tu período de facturación."
+              },
+              {
+                question: "¿Qué tipos de consultas fiscales puedo hacer?",
+                answer: "Cubrimos todas las áreas fiscales: IRPF, IVA, sociedades, autónomos, planificación fiscal, obligaciones declarativas, inspecciones, recursos, y mucho más. Nuestros expertos están especializados en fiscalidad española y te ayudarán con cualquier duda fiscal."
+              }
+            ].map((faq, index) => (
+              <div key={index} className="card-modern group hover:scale-102 transition-all duration-300">
+                <div className="p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors">
+                        {faq.question}
+                      </h3>
+                      <p className="text-gray-600 leading-relaxed">
+                        {faq.answer}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Additional Help */}
+          <div className="mt-12 text-center">
+            <div className="card-modern bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200/50">
+              <div className="p-8">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                  </div>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                  ¿Tienes más preguntas?
+                </h3>
+                <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                  Nuestro equipo está aquí para ayudarte. Envíanos un mensaje y te responderemos lo antes posible.
+                </p>
+                <button className="btn-primary">
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  Contactar Soporte
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Contact CTA */}
-        <div className="mt-16 bg-blue-50 rounded-2xl p-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            ¿Necesitas algo más personalizado?
-          </h2>
-          <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-            Si tienes necesidades específicas o manejas un volumen alto de consultas, 
-            contáctanos para crear un plan empresarial a medida.
-          </p>
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
-            Contactar Ventas
-          </button>
+        <div className="mt-20">
+          <div className="card-modern bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 border-2 border-indigo-200/50">
+            <div className="p-8 lg:p-12 text-center">
+              <div className="flex items-center justify-center mb-6">
+                <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                </div>
+              </div>
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+                <span className="gradient-text">¿Necesitas algo</span>
+                <br />
+                más personalizado?
+              </h2>
+              <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+                Si manejas un alto volumen de consultas, tienes necesidades específicas o representas una empresa, 
+                creamos planes empresariales completamente adaptados a tus requerimientos.
+              </p>
+              
+              <div className="grid md:grid-cols-3 gap-6 mb-8 max-w-4xl mx-auto">
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                    </svg>
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-2">Precios personalizados</h3>
+                  <p className="text-sm text-gray-600">Adaptados a tu volumen y necesidades específicas</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-2">Gestor dedicado</h3>
+                  <p className="text-sm text-gray-600">Un experto fiscal asignado para tu empresa</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-2">SLA garantizado</h3>
+                  <p className="text-sm text-gray-600">Tiempos de respuesta y disponibilidad asegurados</p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button className="btn-primary">
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                  Contactar Ventas
+                </button>
+                <button className="btn-secondary">
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Solicitar Propuesta
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

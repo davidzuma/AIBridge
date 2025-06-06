@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
     if (!user?.isPremium) {
       return NextResponse.json({ 
-        error: 'Acceso premium requerido para revisión humana' 
+        error: 'Acceso premium requerido para revisión de un profesional' 
       }, { status: 403 })
     }
 
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Solicitud de revisión humana enviada',
+      message: 'Solicitud de revisión profesional enviada',
       chat: updatedChat
     })
 
