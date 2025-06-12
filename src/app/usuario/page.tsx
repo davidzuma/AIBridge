@@ -11,6 +11,17 @@ interface Chat {
   status: string
   reviewerComment?: string
   createdAt: string
+  files?: ChatFile[]
+}
+
+interface ChatFile {
+  id: string
+  fileName: string
+  originalName: string
+  mimeType: string
+  size: number
+  filePath: string
+  createdAt: string
 }
 
 // Removed unused User interface
@@ -24,6 +35,9 @@ export default function UsuarioPage() {
   const [reviewLoading, setReviewLoading] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState("chat")
   const [userPremium, setUserPremium] = useState(false)
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+  const [uploadedFiles, setUploadedFiles] = useState<any[]>([])
+  const [isUploading, setIsUploading] = useState(false)
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -70,6 +84,9 @@ export default function UsuarioPage() {
 
     setIsLoading(true)
     try {
+      // Upload files first if any are selected
+      const uploadedFileInfos = await uploadFiles()
+
       const response = await fetch("/api/chats", {
         method: "POST",
         headers: {
@@ -77,11 +94,14 @@ export default function UsuarioPage() {
         },
         body: JSON.stringify({
           content: newMessage,
+          files: uploadedFileInfos
         }),
       })
 
       if (response.ok) {
         setNewMessage("")
+        setSelectedFiles([])
+        setUploadedFiles([])
         await fetchChats() // This will now show the AI response automatically
       }
     } catch (error) {
@@ -116,6 +136,78 @@ export default function UsuarioPage() {
     } finally {
       setReviewLoading(null)
     }
+  }
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    setSelectedFiles(prev => [...prev, ...files])
+  }
+
+  const removeFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index))
+  }
+
+  const uploadFiles = async (): Promise<any[]> => {
+    if (selectedFiles.length === 0) return []
+
+    setIsUploading(true)
+    const uploadedFileInfos = []
+
+    try {
+      for (const file of selectedFiles) {
+        const formData = new FormData()
+        formData.append('file', file)
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        })
+
+        if (response.ok) {
+          const fileInfo = await response.json()
+          uploadedFileInfos.push(fileInfo)
+        } else {
+          throw new Error(`Error uploading ${file.name}`)
+        }
+      }
+      return uploadedFileInfos
+    } catch (error) {
+      console.error('Error uploading files:', error)
+      alert('Error uploading files. Please try again.')
+      return []
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  const downloadFile = async (fileId: string, fileName: string) => {
+    try {
+      const response = await fetch(`/api/files/${fileId}`)
+      if (response.ok) {
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = fileName
+        document.body.appendChild(a)
+        a.click()
+        window.URL.revokeObjectURL(url)
+        document.body.removeChild(a)
+      } else {
+        alert('Error downloading file')
+      }
+    } catch (error) {
+      console.error('Error downloading file:', error)
+      alert('Error downloading file')
+    }
+  }
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 
   const getStatusBadge = (status: string) => {
@@ -291,6 +383,63 @@ export default function UsuarioPage() {
                   />
                 </div>
                 
+                {/* File Upload Section */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    Adjuntar archivos (opcional)
+                  </label>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-center w-full">
+                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                          <svg className="w-8 h-8 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                          </svg>
+                          <p className="mb-2 text-sm text-gray-500">
+                            <span className="font-semibold">Click para subir</span> o arrastra archivos aquí
+                          </p>
+                          <p className="text-xs text-gray-500">PDF, DOC, XLS, IMG (Máx. 10MB)</p>
+                        </div>
+                        <input
+                          type="file"
+                          multiple
+                          onChange={handleFileSelect}
+                          className="hidden"
+                          accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif,.txt"
+                        />
+                      </label>
+                    </div>
+                    
+                    {/* Selected Files */}
+                    {selectedFiles.length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium text-gray-700">Archivos seleccionados:</p>
+                        {selectedFiles.map((file, index) => (
+                          <div key={index} className="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div className="flex items-center space-x-3">
+                              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{file.name}</p>
+                                <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => removeFile(index)}
+                              className="p-1 text-red-600 hover:text-red-800 transition-colors"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
                 <button
                   onClick={sendMessage}
                   disabled={isLoading || !newMessage.trim()}
@@ -371,6 +520,37 @@ export default function UsuarioPage() {
                             <span className="font-semibold text-gray-900 text-sm">Tu consulta</span>
                           </div>
                           <p className="text-gray-700 leading-relaxed">{chat.content}</p>
+                          
+                          {/* Display attached files */}
+                          {chat.files && chat.files.length > 0 && (
+                            <div className="mt-3 space-y-2">
+                              <p className="text-sm font-medium text-gray-600">Archivos adjuntos:</p>
+                              <div className="space-y-2">
+                                {chat.files.map((file) => (
+                                  <div key={file.id} className="flex items-center justify-between p-2 bg-gray-50 border border-gray-200 rounded-lg">
+                                    <div className="flex items-center space-x-2">
+                                      <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                      </svg>
+                                      <div>
+                                        <p className="text-sm font-medium text-gray-900">{file.originalName}</p>
+                                        <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
+                                      </div>
+                                    </div>
+                                    <button
+                                      onClick={() => downloadFile(file.id, file.originalName)}
+                                      className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
+                                      title="Descargar archivo"
+                                    >
+                                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                         <div className="flex flex-col items-end space-y-3">
                           {getStatusBadge(chat.status)}
@@ -490,7 +670,7 @@ export default function UsuarioPage() {
                     <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
-                    <span className="text-gray-700">Respuestas instantáneas con IA especializada</span>
+                    <span className="text-gray-700">Respuestas instantáneas with IA especializada</span>
                   </li>
                   <li className="flex items-start space-x-3">
                     <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -533,7 +713,7 @@ export default function UsuarioPage() {
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
+                  </svg>
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">Plan Premium</h3>
                   <p className="text-gray-700">Asesoría fiscal profesional completa</p>
@@ -613,7 +793,7 @@ export default function UsuarioPage() {
                 <ul className="space-y-3">
                   <li>
                     <a href="#" className="flex items-center text-blue-600 hover:text-blue-800 transition-colors group/item">
-                      <svg className="w-4 h-4 mr-2 group-hover/item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 mr-2 group-hover:item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                       Guía de Deducciones 2024
@@ -621,7 +801,7 @@ export default function UsuarioPage() {
                   </li>
                   <li>
                     <a href="#" className="flex items-center text-blue-600 hover:text-blue-800 transition-colors group/item">
-                      <svg className="w-4 h-4 mr-2 group-hover/item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 mr-2 group-hover:item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                       Calendario Fiscal Actualizado
@@ -629,7 +809,7 @@ export default function UsuarioPage() {
                   </li>
                   <li>
                     <a href="#" className="flex items-center text-blue-600 hover:text-blue-800 transition-colors group/item">
-                      <svg className="w-4 h-4 mr-2 group-hover/item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 mr-2 group-hover:item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                       Formularios Oficiales
@@ -653,7 +833,7 @@ export default function UsuarioPage() {
                 <ul className="space-y-3">
                   <li>
                     <a href="#" className="flex items-center text-blue-600 hover:text-blue-800 transition-colors group/item">
-                      <svg className="w-4 h-4 mr-2 group-hover/item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 mr-2 group-hover:item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                       ¿Cómo declaro mis ingresos?
@@ -661,7 +841,7 @@ export default function UsuarioPage() {
                   </li>
                   <li>
                     <a href="#" className="flex items-center text-blue-600 hover:text-blue-800 transition-colors group/item">
-                      <svg className="w-4 h-4 mr-2 group-hover/item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 mr-2 group-hover:item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                       Deducciones permitidas
@@ -669,7 +849,7 @@ export default function UsuarioPage() {
                   </li>
                   <li>
                     <a href="#" className="flex items-center text-blue-600 hover:text-blue-800 transition-colors group/item">
-                      <svg className="w-4 h-4 mr-2 group-hover/item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 mr-2 group-hover:item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                       Plazos de presentación
@@ -693,7 +873,7 @@ export default function UsuarioPage() {
                 <ul className="space-y-3">
                   <li>
                     <a href="#" className="flex items-center text-blue-600 hover:text-blue-800 transition-colors group/item">
-                      <svg className="w-4 h-4 mr-2 group-hover/item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 mr-2 group-hover:item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                       Calculadora de IRPF
@@ -701,7 +881,7 @@ export default function UsuarioPage() {
                   </li>
                   <li>
                     <a href="#" className="flex items-center text-blue-600 hover:text-blue-800 transition-colors group/item">
-                      <svg className="w-4 h-4 mr-2 group-hover/item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 mr-2 group-hover:item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                       Calculadora de IVA
@@ -709,7 +889,7 @@ export default function UsuarioPage() {
                   </li>
                   <li>
                     <a href="#" className="flex items-center text-blue-600 hover:text-blue-800 transition-colors group/item">
-                      <svg className="w-4 h-4 mr-2 group-hover/item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 mr-2 group-hover:item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                       Calculadora de Retenciones

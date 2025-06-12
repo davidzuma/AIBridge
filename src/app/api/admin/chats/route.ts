@@ -30,7 +30,20 @@ export async function GET() {
       },
     })
 
-    return NextResponse.json(chats)
+    // Get files for each chat using raw SQL
+    const chatsWithFiles = await Promise.all(
+      chats.map(async (chat) => {
+        const files = await prisma.$queryRaw`
+          SELECT * FROM "ChatFile" WHERE "chatId" = ${chat.id}
+        `;
+        return {
+          ...chat,
+          files
+        };
+      })
+    );
+
+    return NextResponse.json(chatsWithFiles)
   } catch (error) {
     console.error("Error fetching all chats:", error)
     return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })

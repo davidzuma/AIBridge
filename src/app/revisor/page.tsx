@@ -11,11 +11,22 @@ interface Chat {
   status: string
   reviewerComment?: string
   createdAt: string
+  files?: ChatFile[]
   user: {
     name: string
     email: string
     isPremium?: boolean
   }
+}
+
+interface ChatFile {
+  id: string
+  fileName: string
+  originalName: string
+  mimeType: string
+  size: number
+  filePath: string
+  createdAt: string
 }
 
 export default function RevisorPage() {
@@ -47,11 +58,13 @@ export default function RevisorPage() {
       const response = await fetch("/api/admin/chats")
       if (response.ok) {
         const data = await response.json()
+        console.log('Fetched chats data:', data); // Debug log
         // Only show chats that require human review
         const reviewChats = data.filter((chat: Chat) => 
           chat.status === "revision_requerida" || 
           (chat.user.isPremium && chat.status === "ai_respondido")
         )
+        console.log('Filtered review chats:', reviewChats); // Debug log
         setChats(reviewChats)
       }
     } catch (error) {
@@ -91,6 +104,36 @@ export default function RevisorPage() {
     } finally {
       setIsUpdating(false)
     }
+  }
+
+  const downloadFile = async (fileId: string, fileName: string) => {
+    try {
+      const response = await fetch(`/api/files/${fileId}`)
+      if (response.ok) {
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = fileName
+        document.body.appendChild(a)
+        a.click()
+        window.URL.revokeObjectURL(url)
+        document.body.removeChild(a)
+      } else {
+        alert('Error downloading file')
+      }
+    } catch (error) {
+      console.error('Error downloading file:', error)
+      alert('Error downloading file')
+    }
+  }
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 
   const getStatusBadge = (status: string) => {
@@ -331,6 +374,29 @@ export default function RevisorPage() {
                         <p className="text-gray-800 line-clamp-3 leading-relaxed mb-2">
                           {chat.content}
                         </p>
+                        
+                        {/* Display attached files */}
+                        {chat.files && chat.files.length > 0 && (
+                          <div className="mt-2 mb-2">
+                            <p className="text-xs text-gray-600 mb-1">📎 Archivos adjuntos ({chat.files.length}):</p>
+                            <div className="flex flex-wrap gap-1">
+                              {chat.files.map((file) => (
+                                <button
+                                  key={file.id}
+                                  onClick={() => downloadFile(file.id, file.originalName)}
+                                  className="inline-flex items-center px-2 py-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded hover:bg-blue-100 transition-colors"
+                                  title={`${file.originalName} (${formatFileSize(file.size)})`}
+                                >
+                                  <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                  </svg>
+                                  {file.originalName.length > 15 ? `${file.originalName.substring(0, 15)}...` : file.originalName}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        
                         <p className="text-xs text-gray-500">
                           📅 {new Date(chat.createdAt).toLocaleString("es-ES")}
                         </p>
@@ -416,6 +482,37 @@ export default function RevisorPage() {
                     <p className="text-gray-800 leading-relaxed">
                       {selectedChat.content}
                     </p>
+                    
+                    {/* Display attached files */}
+                    {selectedChat.files && selectedChat.files.length > 0 && (
+                      <div className="mt-4 pt-4 border-t border-gray-300">
+                        <p className="text-sm font-medium text-gray-600 mb-3">📎 Archivos adjuntos:</p>
+                        <div className="space-y-2">
+                          {selectedChat.files.map((file) => (
+                            <div key={file.id} className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
+                              <div className="flex items-center space-x-3">
+                                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <div>
+                                  <p className="text-sm font-medium text-gray-900">{file.originalName}</p>
+                                  <p className="text-xs text-gray-500">{formatFileSize(file.size)} • {file.mimeType}</p>
+                                </div>
+                              </div>
+                              <button
+                                onClick={() => downloadFile(file.id, file.originalName)}
+                                className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+                                title="Descargar archivo"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
