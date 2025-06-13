@@ -58,13 +58,11 @@ export default function RevisorPage() {
       const response = await fetch("/api/admin/chats")
       if (response.ok) {
         const data = await response.json()
-        console.log('Fetched chats data:', data); // Debug log
         // Only show chats that require human review
         const reviewChats = data.filter((chat: Chat) => 
           chat.status === "revision_requerida" || 
           (chat.user.isPremium && chat.status === "ai_respondido")
         )
-        console.log('Filtered review chats:', reviewChats); // Debug log
         setChats(reviewChats)
       }
     } catch (error) {

@@ -33,7 +33,16 @@ export async function GET() {
     // Get files for each chat using raw SQL
     const chatsWithFiles = await Promise.all(
       chats.map(async (chat) => {
-        const files = await prisma.$queryRaw`
+        const files = await prisma.$queryRaw<Array<{
+          id: string;
+          chatId: string;
+          fileName: string;
+          originalName: string;
+          mimeType: string;
+          size: number;
+          filePath: string;
+          createdAt: Date;
+        }>>`
           SELECT * FROM "ChatFile" WHERE "chatId" = ${chat.id}
         `;
         return {

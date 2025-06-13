@@ -36,8 +36,6 @@ export default function UsuarioPage() {
   const [activeTab, setActiveTab] = useState("chat")
   const [userPremium, setUserPremium] = useState(false)
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
-  const [uploadedFiles, setUploadedFiles] = useState<any[]>([])
-  const [isUploading, setIsUploading] = useState(false)
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -101,7 +99,6 @@ export default function UsuarioPage() {
       if (response.ok) {
         setNewMessage("")
         setSelectedFiles([])
-        setUploadedFiles([])
         await fetchChats() // This will now show the AI response automatically
       }
     } catch (error) {
@@ -147,10 +144,16 @@ export default function UsuarioPage() {
     setSelectedFiles(prev => prev.filter((_, i) => i !== index))
   }
 
-  const uploadFiles = async (): Promise<any[]> => {
+  const uploadFiles = async (): Promise<Array<{
+    id: string;
+    fileName: string;
+    originalName: string;
+    mimeType: string;
+    size: number;
+    filePath: string;
+  }>> => {
     if (selectedFiles.length === 0) return []
 
-    setIsUploading(true)
     const uploadedFileInfos = []
 
     try {
@@ -175,8 +178,6 @@ export default function UsuarioPage() {
       console.error('Error uploading files:', error)
       alert('Error uploading files. Please try again.')
       return []
-    } finally {
-      setIsUploading(false)
     }
   }
 

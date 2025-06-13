@@ -8,7 +8,7 @@ import { existsSync } from 'fs'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { fileId: string } }
+  { params }: { params: Promise<{ fileId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -17,16 +17,28 @@ export async function GET(
       return NextResponse.json({ error: "No autorizado" }, { status: 401 })
     }
 
-    const fileId = params.fileId
+    const { fileId } = await params
 
     // Get file information from database using raw SQL
-    const chatFiles = await prisma.$queryRaw`
+    const chatFiles = await prisma.$queryRaw<Array<{
+      id: string;
+      chatId: string;
+      fileName: string;
+      originalName: string;
+      mimeType: string;
+      size: number;
+      filePath: string;
+      createdAt: Date;
+      userId: string;
+      userName: string;
+      userEmail: string;
+    }>>`
       SELECT cf.*, c."userId", u."name" as "userName", u."email" as "userEmail"
       FROM "ChatFile" cf
       JOIN "Chat" c ON cf."chatId" = c.id
       JOIN "User" u ON c."userId" = u.id
       WHERE cf.id = ${fileId}
-    ` as any[];
+    `;
 
     if (!chatFiles || chatFiles.length === 0) {
       return NextResponse.json({ error: "Archivo no encontrado" }, { status: 404 })
