@@ -88,7 +88,14 @@ export default function UsuarioPage() {
   // New streaming message function
   const sendStreamingMessage = async () => {
     if (!newMessage.trim()) return
+    
+    // Prevent duplicate calls while already loading
+    if (isLoading) {
+      console.log('Already loading, preventing duplicate call')
+      return
+    }
 
+    console.log('Starting streaming message request:', newMessage)
     setIsLoading(true)
     setStreamingResponse(true)
     setCurrentResponse("")
@@ -483,7 +490,7 @@ export default function UsuarioPage() {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
-                          <h4 className="font-semibold text-blue-900 text-sm">Clasificación:</h4>
+                          <h4 className="font-semibold text-blue-900 text-sm">Classification:</h4>
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                             currentClassification.category === 'Fiscal' ? 'bg-green-100 text-green-800' :
                             currentClassification.category === 'Laboral' ? 'bg-blue-100 text-blue-800' :
@@ -493,7 +500,7 @@ export default function UsuarioPage() {
                             {currentClassification.category}
                           </span>
                         </div>
-                        <p className="text-sm text-blue-800 font-medium mb-1">Pregunta estructurada:</p>
+                        <p className="text-sm text-blue-800 font-medium mb-1">Structured question:</p>
                         <p className="text-sm text-blue-700 italic">&ldquo;{currentClassification.structuredQuestion}&rdquo;</p>
                       </div>
                     </div>

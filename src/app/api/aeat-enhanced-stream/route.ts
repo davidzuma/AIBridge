@@ -4,6 +4,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
+  console.log('Enhanced streaming API called at:', new Date().toISOString())
+  
   try {
     // Check authentication
     const session = await getServerSession(authOptions);

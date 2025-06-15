@@ -534,7 +534,7 @@ export default function RevisorPage() {
                 {selectedChat.classification && (
                   <div className="mb-4">
                     <label className="block text-sm font-semibold text-gray-900 mb-2">
-                      📂 Clasificación
+                      📂 Classification
                     </label>
                     <div className="bg-green-50 border border-green-200 rounded-lg p-3">
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
