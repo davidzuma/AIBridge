@@ -20,21 +20,21 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "MZ Asesoría - Sistema de Consultas Fiscales y Laborales con IA",
-  description: "Plataforma profesional de consultas fiscales y laborales con inteligencia artificial. Obtén respuestas expertas, revisión de profesionales y soporte Premium 24/7.",
-  keywords: "consultas fiscales, consultas laborales, asesoría fiscal, IA fiscal, consultor fiscal, revisión profesional",
-  authors: [{ name: "MZ Asesoría" }],
+  title: "AIBridge Advisory - AI-Powered Tax and Legal Consulting System",
+  description: "Professional tax and legal consulting platform with artificial intelligence. Get expert answers, professional review, and 24/7 Premium support.",
+  keywords: "tax consulting, legal consulting, tax advisory, AI tax, tax consultant, professional review, AI bridge advisory",
+  authors: [{ name: "AIBridge Advisory" }],
   robots: "index, follow",
   openGraph: {
-    title: "MZ Asesoría - Consultas Fiscales y Laborales con IA",
-    description: "Plataforma profesional de consultas fiscales y laborales con inteligencia artificial",
+    title: "AIBridge Advisory - AI-Powered Tax and Legal Consulting",
+    description: "Professional tax and legal consulting platform with artificial intelligence",
     type: "website",
-    locale: "es_ES",
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "MZ Asesoría - Consultas Fiscales y Laborales con IA",
-    description: "Plataforma profesional de consultas fiscales y laborales con inteligencia artificial",
+    title: "AIBridge Advisory - AI-Powered Tax and Legal Consulting",
+    description: "Professional tax and legal consulting platform with artificial intelligence",
   },
 };
 
@@ -50,7 +50,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="en">
       <head>
         <link rel="icon" href="/favicon.ico" />
         <meta name="theme-color" content="#8b5cf6" />

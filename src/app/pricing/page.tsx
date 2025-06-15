@@ -11,45 +11,45 @@ export default function PricingPage() {
 
   const plans = [
     {
-      name: "Gratuito",
-      price: "0€",
-      period: "siempre",
-      description: "Perfecto para empezar con consultas básicas",
+      name: "Free",
+      price: "$0",
+      period: "forever",
+      description: "Perfect to get started with basic queries",
       features: [
-        "3 consultas fiscales por mes",
-        "Respuesta en 72 horas",
-        "Acceso a recursos básicos",
-        "Chat básico con revisor",
-        "Soporte por email"
+        "3 tax queries per month",
+        "Response within 72 hours",
+        "Access to basic resources",
+        "Basic chat with reviewer",
+        "Email support"
       ],
       limitations: [
-        "Máximo 3 consultas mensuales",
-        "No incluye asesoramiento personalizado",
-        "Sin seguimiento de expedientes"
+        "Maximum 3 monthly queries",
+        "No personalized advice included",
+        "No case tracking"
       ],
-      buttonText: session ? "Plan Actual" : "Comenzar Gratis",
+      buttonText: session ? "Current Plan" : "Start Free",
       buttonStyle: "border-2 border-gray-300 text-gray-700 hover:border-gray-400",
       popular: false
     },
     {
-      name: "Profesional",
-      price: isAnnual ? "25€" : "30€",
-      originalPrice: isAnnual ? "30€" : null,
-      period: isAnnual ? "mes (facturado anualmente)" : "mes",
-      description: "Solución completa para autónomos y pequeñas empresas",
+      name: "Professional",
+      price: isAnnual ? "$25" : "$30",
+      originalPrice: isAnnual ? "$30" : null,
+      period: isAnnual ? "month (billed annually)" : "month",
+      description: "Complete solution for freelancers and small businesses",
       features: [
-        "Consultas fiscales ilimitadas",
-        "Respuesta en 24 horas",
-        "Asesoramiento personalizado",
-        "Gestión de expedientes completa",
-        "Chat directo con expertos fiscales",
-        "Revisión de documentos",
-        "Planificación fiscal anual",
-        "Soporte prioritario",
-        "Acceso a plantillas y formularios",
-        "Recordatorios de obligaciones fiscales"
+        "Unlimited tax queries",
+        "Response within 24 hours",
+        "Personalized advice",
+        "Complete case management",
+        "Direct chat with tax experts",
+        "Document review",
+        "Annual tax planning",
+        "Priority support",
+        "Access to templates and forms",
+        "Tax obligation reminders"
       ],
-      buttonText: "Comenzar Prueba Gratuita",
+      buttonText: "Start Free Trial",
       buttonStyle: "bg-blue-600 text-white hover:bg-blue-700",
       popular: true
     }
@@ -61,11 +61,11 @@ export default function PricingPage() {
       return
     }
 
-    if (planName === "Gratuito") {
+    if (planName === "Free") {
       router.push("/usuario")
     } else {
-      // Aquí iría la integración con Stripe o el procesador de pagos
-      alert("Redirigiendo a la página de pago... (Por implementar)")
+      // Here would go the integration with Stripe or payment processor
+      alert("Redirecting to payment page... (To be implemented)")
     }
   }
 
@@ -78,16 +78,16 @@ export default function PricingPage() {
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
             </svg>
-            Precios transparentes
+            Transparent pricing
           </div>
           <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            <span className="gradient-text">Planes</span> que se adaptan
+            <span className="gradient-text">Plans</span> that adapt
             <br />
-            <span className="text-gray-700">a tu negocio</span>
+            <span className="text-gray-700">to your business</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Desde consultas básicas hasta asesoramiento fiscal completo. 
-            Elige la solución perfecta para tus necesidades.
+            From basic queries to complete tax advisory. 
+            Choose the perfect solution for your needs.
           </p>
         </div>
 
@@ -102,7 +102,7 @@ export default function PricingPage() {
                   : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
-              Mensual
+              Monthly
             </button>
             <button
               onClick={() => setIsAnnual(true)}
@@ -112,7 +112,7 @@ export default function PricingPage() {
                   : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
-              <span>Anual</span>
+              <span>Annual</span>
               <span className="inline-flex items-center px-2 py-1 text-xs font-bold bg-green-100 text-green-800 rounded-full">
                 <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
@@ -140,7 +140,7 @@ export default function PricingPage() {
                     <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
-                    Más Popular
+                    Most Popular
                   </span>
                 </div>
               )}
@@ -171,8 +171,8 @@ export default function PricingPage() {
                     <span className="text-5xl font-bold text-gray-900">{plan.price}</span>
                     <span className="text-gray-600 ml-2 text-lg">/{plan.period.split(' ')[0]}</span>
                   </div>
-                  {plan.period.includes('facturado') && (
-                    <p className="text-sm text-gray-500">{plan.period.split('mes ')[1]}</p>
+                  {plan.period.includes('billed') && (
+                    <p className="text-sm text-gray-500">{plan.period.split('month ')[1]}</p>
                   )}
                   <p className="text-gray-600 leading-relaxed">{plan.description}</p>
                 </div>
@@ -183,7 +183,7 @@ export default function PricingPage() {
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Todo incluido
+                    Everything included
                   </h4>
                   <ul className="space-y-3">
                     {plan.features.map((feature, featureIndex) => (
@@ -204,7 +204,7 @@ export default function PricingPage() {
                       <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd"/>
                       </svg>
-                      Limitaciones
+                      Limitations
                     </h4>
                     <ul className="space-y-2">
                       {plan.limitations.map((limitation, limitIndex) => (
@@ -233,12 +233,12 @@ export default function PricingPage() {
                   </button>
 
                   {/* Trial Notice for Pro Plan */}
-                  {plan.name === "Profesional" && (
+                  {plan.name === "Professional" && (
                     <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span>Prueba gratuita de 14 días • Cancela cuando quieras</span>
+                      <span>14-day free trial • Cancel anytime</span>
                     </div>
                   )}
                 </div>
@@ -254,43 +254,43 @@ export default function PricingPage() {
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              Preguntas frecuentes
+              Frequently asked questions
             </div>
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              <span className="gradient-text">Todo lo que</span>
+              <span className="gradient-text">Everything you</span>
               <br />
-              necesitas saber
+              need to know
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Resolvemos las dudas más comunes sobre nuestros planes y servicios
+              We answer the most common questions about our plans and services
             </p>
           </div>
 
           <div className="grid gap-6">
             {[
               {
-                question: "¿Puedo cambiar de plan en cualquier momento?",
-                answer: "Absolutamente. Puedes actualizar o degradar tu plan cuando lo necesites. Si actualizas, tendrás acceso inmediato a las nuevas funciones. Si degradas, los cambios se aplicarán al final del período de facturación actual para que aproveches al máximo lo que ya has pagado."
+                question: "Can I change my plan at any time?",
+                answer: "Absolutely. You can upgrade or downgrade your plan whenever you need. If you upgrade, you'll have immediate access to new features. If you downgrade, changes will apply at the end of your current billing period so you make the most of what you've already paid for."
               },
               {
-                question: "¿Qué incluye la prueba gratuita del plan Profesional?",
-                answer: "La prueba gratuita de 14 días te da acceso completo a todas las funciones del plan Profesional: consultas ilimitadas, respuesta en 24 horas, asesoramiento personalizado, chat directo con expertos y todas las herramientas avanzadas. No hay limitaciones ni funciones ocultas."
+                question: "What does the Professional plan free trial include?",
+                answer: "The 14-day free trial gives you complete access to all Professional plan features: unlimited queries, 24-hour response, personalized advice, direct chat with experts, and all advanced tools. There are no limitations or hidden features."
               },
               {
-                question: "¿Los precios incluyen IVA?",
-                answer: "Los precios mostrados son sin IVA. El IVA correspondiente se calculará automáticamente según tu ubicación durante el proceso de pago, cumpliendo con la normativa fiscal europea."
+                question: "Do prices include VAT?",
+                answer: "The prices shown are without VAT. The corresponding VAT will be automatically calculated based on your location during the payment process, complying with European tax regulations."
               },
               {
-                question: "¿Cómo funciona la respuesta en 24 horas?",
-                answer: "Para usuarios Premium, garantizamos que un experto fiscal revisará y responderá tu consulta en un máximo de 24 horas laborables. Las consultas urgentes suelen recibir respuesta en pocas horas, especialmente durante horario laboral."
+                question: "How does the 24-hour response work?",
+                answer: "For Premium users, we guarantee that a tax expert will review and respond to your query within a maximum of 24 business hours. Urgent queries usually receive responses within hours, especially during business hours."
               },
               {
-                question: "¿Puedo cancelar mi suscripción en cualquier momento?",
-                answer: "Sí, puedes cancelar tu suscripción cuando quieras desde tu panel de usuario. No hay penalizaciones ni comisiones ocultas. Si cancelas, mantendrás acceso a las funciones Premium hasta el final de tu período de facturación."
+                question: "Can I cancel my subscription at any time?",
+                answer: "Yes, you can cancel your subscription anytime from your user panel. There are no penalties or hidden fees. If you cancel, you'll maintain access to Premium features until the end of your billing period."
               },
               {
-                question: "¿Qué tipos de consultas fiscales puedo hacer?",
-                answer: "Cubrimos todas las áreas fiscales: IRPF, IVA, sociedades, autónomos, planificación fiscal, obligaciones declarativas, inspecciones, recursos, y mucho más. Nuestros expertos están especializados en fiscalidad española y te ayudarán con cualquier duda fiscal."
+                question: "What types of tax queries can I make?",
+                answer: "We cover all tax areas: personal income tax, VAT, corporate tax, self-employed, tax planning, filing obligations, inspections, appeals, and much more. Our experts specialize in tax law and will help you with any tax questions."
               }
             ].map((faq, index) => (
               <div key={index} className="card-modern group hover:scale-102 transition-all duration-300">
@@ -329,16 +329,16 @@ export default function PricingPage() {
                   </div>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                  ¿Tienes más preguntas?
+                  Have more questions?
                 </h3>
                 <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                  Nuestro equipo está aquí para ayudarte. Envíanos un mensaje y te responderemos lo antes posible.
+                  Our team is here to help you. Send us a message and we'll get back to you as soon as possible.
                 </p>
                 <button className="btn-primary">
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  Contactar Soporte
+                  Contact Support
                 </button>
               </div>
             </div>
@@ -357,13 +357,13 @@ export default function PricingPage() {
                 </div>
               </div>
               <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-                <span className="gradient-text">¿Necesitas algo</span>
+                <span className="gradient-text">Need something</span>
                 <br />
-                más personalizado?
+                more personalized?
               </h2>
               <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-                Si manejas un alto volumen de consultas, tienes necesidades específicas o representas una empresa, 
-                creamos planes empresariales completamente adaptados a tus requerimientos.
+                If you handle a high volume of queries, have specific needs, or represent a company, 
+                we create enterprise plans completely adapted to your requirements.
               </p>
               
               <div className="grid md:grid-cols-3 gap-6 mb-8 max-w-4xl mx-auto">
@@ -373,8 +373,8 @@ export default function PricingPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
                     </svg>
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Precios personalizados</h3>
-                  <p className="text-sm text-gray-600">Adaptados a tu volumen y necesidades específicas</p>
+                  <h3 className="font-semibold text-gray-900 mb-2">Custom pricing</h3>
+                  <p className="text-sm text-gray-600">Adapted to your volume and specific needs</p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -382,8 +382,8 @@ export default function PricingPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">Gestor dedicado</h3>
-                  <p className="text-sm text-gray-600">Un experto fiscal asignado para tu empresa</p>
+                  <h3 className="font-semibold text-gray-900 mb-2">Dedicated manager</h3>
+                  <p className="text-sm text-gray-600">A tax expert assigned to your company</p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -391,8 +391,8 @@ export default function PricingPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">SLA garantizado</h3>
-                  <p className="text-sm text-gray-600">Tiempos de respuesta y disponibilidad asegurados</p>
+                  <h3 className="font-semibold text-gray-900 mb-2">Guaranteed SLA</h3>
+                  <p className="text-sm text-gray-600">Assured response times and availability</p>
                 </div>
               </div>
 
@@ -401,13 +401,13 @@ export default function PricingPage() {
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
-                  Contactar Ventas
+                  Contact Sales
                 </button>
                 <button className="btn-secondary">
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  Solicitar Propuesta
+                  Request Proposal
                 </button>
               </div>
             </div>

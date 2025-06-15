@@ -1,22 +1,19 @@
 export default function Loading() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
-      <div className="text-center space-y-8">
-        {/* Logo or Brand */}
+      <div className="text-center space-y-8">        {/* Logo or Brand */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold gradient-text">MZ Asesoría</h1>
-          <p className="text-gray-600 text-lg mt-2">Sistema de Consultas Fiscales y Laborales</p>
+          <h1 className="text-4xl font-bold gradient-text">AIBridge Advisory</h1>
+          <p className="text-gray-600 text-lg mt-2">AI-Powered Tax and Legal Consulting System</p>
         </div>
-
         {/* Modern Loading Spinner */}
         <div className="relative">
           <div className="w-20 h-20 border-4 border-blue-200 rounded-full animate-spin"></div>
           <div className="absolute top-0 left-0 w-20 h-20 border-4 border-transparent border-t-blue-600 rounded-full animate-spin"></div>
         </div>
-
         {/* Loading Text */}
         <div className="space-y-2">
-          <p className="text-xl font-semibold text-gray-900">Cargando...</p>
+          <p className="text-xl font-semibold text-gray-900">Loading...</p>
           <p className="text-gray-600">Preparando tu experiencia profesional</p>
         </div>
 
