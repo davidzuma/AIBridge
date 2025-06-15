@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     const uploadsDir = path.join(process.cwd(), 'uploads', 'certifications')
     try {
       await mkdir(uploadsDir, { recursive: true })
-    } catch (error) {
+    } catch {
       // Directory might already exist, ignore error
     }
 
@@ -76,8 +76,9 @@ export async function POST(request: Request) {
         name: fullName // Update name if provided
       }
     })
+    
     // Store the application record for reference
-    const application = await prisma.reviewerApplication.create({
+    await prisma.reviewerApplication.create({
       data: {
         userEmail: session.user.email,
         userName: fullName,

@@ -163,7 +163,7 @@ export default function UsuarioPage() {
       setNewMessage("")
     } catch (error) {
       console.error("Error sending streaming message:", error)
-      setCurrentResponse("Error al procesar la consulta. Por favor, inténtalo de nuevo.")
+      setCurrentResponse("Error processing the consultation. Please try again.")
       setStreamingResponse(false)
     } finally {
       setIsLoading(false)
@@ -239,7 +239,7 @@ export default function UsuarioPage() {
             Pendiente
           </span>
         )
-      case "ai_respondido":
+      case "ai_responded":
         return (
           <span className={`${baseClasses} bg-blue-100 text-blue-800`}>
             IA
@@ -382,7 +382,7 @@ export default function UsuarioPage() {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
-              <span>Consultas AEAT</span>
+              <span>Consultations</span>
             </button>
             {!userPremium && (
               <button
@@ -396,7 +396,7 @@ export default function UsuarioPage() {
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
-                <span>Hazte Premium</span>
+                <span>Get Premium</span>
               </button>
             )}
           </nav>
@@ -415,7 +415,7 @@ export default function UsuarioPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
                   </div>
-                  <h2 className="text-lg font-bold text-gray-900">Nueva Consulta AEAT</h2>
+                  <h2 className="text-lg font-bold text-gray-900">New Consultation</h2>
                 </div>
                 
                 <div className="flex space-x-4">
@@ -423,7 +423,7 @@ export default function UsuarioPage() {
                     <textarea
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder="¿Cómo puedo presentar la declaración de la renta 2024?"
+                      placeholder="Ask your question here..."
                       className="w-full p-3 border border-gray-200 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       rows={3}
                     />
@@ -439,14 +439,14 @@ export default function UsuarioPage() {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                         </svg>
-                        <span>Consultando...</span>
+                        <span>Consulting...</span>
                       </>
                     ) : (
                       <>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                         </svg>
-                        <span>Consultar</span>
+                        <span>Submit</span>
                       </>
                     )}
                   </button>
@@ -462,12 +462,12 @@ export default function UsuarioPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                       </svg>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900">Respuesta AEAT</h3>
+                    <h3 className="text-lg font-bold text-gray-900">Specialized Answer</h3>
                   </div>
                   {streamingResponse && (
                     <div className="flex items-center space-x-2 text-sm text-blue-600">
                       <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                      <span>Procesando consulta...</span>
+                      <span>Processing consultation...</span>
                     </div>
                   )}
                 </div>
@@ -547,7 +547,7 @@ export default function UsuarioPage() {
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                           </div>
-                          <h4 className="text-lg font-semibold text-gray-900 mb-2">Haz tu primera consulta</h4>
+                          <h4 className="text-lg font-semibold text-gray-900 mb-2">Make your first consultation</h4>
                           <p className="text-gray-500">Las respuestas aparecerán aquí en tiempo real</p>
                         </div>
                       </div>
@@ -609,7 +609,7 @@ export default function UsuarioPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <h3 className="text-sm font-bold text-gray-900">Historial de Consultas</h3>
+                  <h3 className="text-sm font-bold text-gray-900">Consultation History</h3>
                 </div>
                 
                 <div className="flex-1 overflow-y-auto space-y-3" style={{ scrollbarWidth: 'thin' }}>
@@ -620,7 +620,7 @@ export default function UsuarioPage() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                         </svg>
                       </div>
-                      <p className="text-xs text-gray-500">No hay consultas aún</p>
+                      <p className="text-xs text-gray-500">No consultations yet</p>
                     </div>
                   ) : (
                     chats.map((chat) => (
@@ -635,7 +635,7 @@ export default function UsuarioPage() {
                           <span className="text-xs text-gray-400">
                             {new Date(chat.createdAt).toLocaleDateString("es-ES")}
                           </span>
-                          {userPremium && chat.status === "ai_respondido" && (
+                          {userPremium && chat.status === "ai_responded" && (
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -668,7 +668,7 @@ export default function UsuarioPage() {
                 Mejora tu experiencia
               </div>
               <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Hazte Premium</span>
+                <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Get Premium</span>
               </h2>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                 Accede a revisión profesional especializada y lleva tu asesoría fiscal al siguiente nivel
@@ -684,7 +684,7 @@ export default function UsuarioPage() {
                     </svg>
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">Plan Gratuito</h3>
-                  <p className="text-gray-600">Perfecto para consultas básicas</p>
+                  <p className="text-gray-600">Perfect for basic consultations</p>
                 </div>
                 <ul className="space-y-4">
                   <li className="flex items-start space-x-3">
@@ -703,7 +703,7 @@ export default function UsuarioPage() {
                     <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
-                    <span className="text-gray-700">Historial completo de consultas</span>
+                    <span className="text-gray-700">Complete consultation history</span>
                   </li>
                 </ul>
               </div>
@@ -715,7 +715,7 @@ export default function UsuarioPage() {
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Plan Premium</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Premium Plan</h3>
                   <p className="text-gray-600">Máximo nivel profesional</p>
                 </div>
                 <ul className="space-y-4 mb-8">
@@ -739,7 +739,7 @@ export default function UsuarioPage() {
                   </li>
                 </ul>
                 <button className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-4 rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all font-semibold">
-                  Hazte Premium
+                  Get Premium
                 </button>
               </div>
             </div>

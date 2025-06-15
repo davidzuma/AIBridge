@@ -90,7 +90,7 @@ export default function ReviewerRegistrationPage() {
       })
 
       if (response.ok) {
-        const result = await response.json()
+        await response.json() // Consume response
         alert('Registration successful! You are now a verified reviewer and can access both user and reviewer features.')
         // Redirect to reviewer dashboard
         window.location.href = '/revisor'

@@ -53,10 +53,10 @@ export default function RevisorPage() {
   }, [session, status, router])
 
   useEffect(() => {
-    if (session?.user) {
+    if (status === "authenticated" && session?.user?.role === "reviewer") {
       fetchChats()
     }
-  }, [session])
+  }, [status, session?.user?.role])
 
   const fetchChats = async () => {
     try {
@@ -65,8 +65,8 @@ export default function RevisorPage() {
         const data = await response.json()
         // Only show chats that require human review
         const reviewChats = data.filter((chat: Chat) => 
-          chat.status === "revision_requerida" || 
-          (chat.user.isPremium && chat.status === "ai_respondido")
+          chat.status === "review_required" || 
+          (chat.user.isPremium && chat.status === "ai_responded")
         )
         setChats(reviewChats)
       }
@@ -141,14 +141,14 @@ export default function RevisorPage() {
 
   const getStatusBadge = (status: string) => {
     const statusMap = {
-      ai_respondido: "status-pending",
-      validado: "status-approved", 
-      revision_requerida: "status-revision",
+      ai_responded: "status-pending",
+      validated: "status-approved", 
+      review_required: "status-revision",
     }
     const labels = {
-      ai_respondido: "Respuesta IA",
-      validado: "Validado",
-      revision_requerida: "Requiere Revisión",
+      ai_responded: "Specialized Answer",
+      validated: "Validated",
+      review_required: "Requires Review",
     }
     
     return (
@@ -160,9 +160,9 @@ export default function RevisorPage() {
 
   const getStatusCounts = () => {
     return {
-      ai_respondido: chats.filter(chat => chat.status === "ai_respondido").length,
-      validado: chats.filter(chat => chat.status === "validado").length,
-      revision_requerida: chats.filter(chat => chat.status === "revision_requerida").length,
+      ai_responded: chats.filter(chat => chat.status === "ai_responded").length,
+      validated: chats.filter(chat => chat.status === "validated").length,
+      review_required: chats.filter(chat => chat.status === "review_required").length,
     }
   }
 
@@ -171,7 +171,7 @@ export default function RevisorPage() {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600 mb-4 mx-auto"></div>
-          <p className="text-gray-600 font-medium">Cargando panel de revisor...</p>
+          <p className="text-gray-600 font-medium">Loading reviewer panel...</p>
         </div>
       </div>
     )
@@ -240,12 +240,12 @@ export default function RevisorPage() {
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <div className="feature-icon bg-gradient-to-r from-blue-500 to-blue-600">
-                    <span className="text-white font-bold text-lg">{statusCounts.ai_respondido}</span>
+                    <span className="text-white font-bold text-lg">{statusCounts.ai_responded}</span>
                   </div>
                 </div>
                 <div className="ml-5 flex-1">
                   <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-                    Respuestas IA Premium
+                    Specialized Answers
                   </h3>
                   <p className="text-sm text-gray-600 mt-1">
                     Pendientes de revisión profesional
@@ -260,15 +260,15 @@ export default function RevisorPage() {
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <div className="feature-icon bg-gradient-to-r from-orange-500 to-orange-600">
-                    <span className="text-white font-bold text-lg">{statusCounts.revision_requerida}</span>
+                    <span className="text-white font-bold text-lg">{statusCounts.review_required}</span>
                   </div>
                 </div>
                 <div className="ml-5 flex-1">
                   <h3 className="text-lg font-semibold text-gray-900 group-hover:text-orange-600 transition-colors">
-                    Revisión Solicitada
+                    Review Requested
                   </h3>
                   <p className="text-sm text-gray-600 mt-1">
-                    Casos que requieren atención urgente
+                    Cases requiring urgent attention
                   </p>
                 </div>
               </div>
@@ -280,15 +280,15 @@ export default function RevisorPage() {
               <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <div className="feature-icon bg-gradient-to-r from-green-500 to-green-600">
-                    <span className="text-white font-bold text-lg">{statusCounts.validado}</span>
+                    <span className="text-white font-bold text-lg">{statusCounts.validated}</span>
                   </div>
                 </div>
                 <div className="ml-5 flex-1">
                   <h3 className="text-lg font-semibold text-gray-900 group-hover:text-green-600 transition-colors">
-                    Validadas
+                    Validated
                   </h3>
                   <p className="text-sm text-gray-600 mt-1">
-                    Consultas completadas exitosamente
+                    Successfully completed consultations
                   </p>
                 </div>
               </div>
@@ -312,9 +312,9 @@ export default function RevisorPage() {
                   Panel Exclusivo de Usuarios Premium
                 </h3>
                 <p className="mt-2 text-blue-700 leading-relaxed">
-                  Este panel está diseñado específicamente para la revisión profesional de consultas de usuarios Premium. 
-                  Todas las consultas estándar son procesadas automáticamente por nuestro sistema de IA, mientras que 
-                  las consultas Premium reciben atención personalizada de nuestro equipo de expertos.
+                  This panel is specifically designed for professional review of Premium user consultations. 
+                  All standard consultations are automatically processed by our AI system, while 
+                  Premium consultations receive personalized attention from our team of experts.
                 </p>
               </div>
             </div>
@@ -332,10 +332,10 @@ export default function RevisorPage() {
               </div>
               <div>
                 <h3 className="text-xl font-semibold text-gray-900">
-                  Consultas Premium para Revisar
+                  Premium Consultations for Review
                 </h3>
                 <p className="text-sm text-gray-600 mt-1">
-                  Consultas de usuarios Premium que requieren revisión profesional personalizada
+                  Premium user consultations that require personalized professional review
                 </p>
               </div>
             </div>
@@ -350,13 +350,13 @@ export default function RevisorPage() {
                     </svg>
                   </div>
                   <h4 className="text-lg font-medium text-gray-900 mb-2">
-                    ¡Todo al día!
+                    All up to date!
                   </h4>
                   <p className="text-gray-600 max-w-md">
-                    No hay consultas premium pendientes de revisar en este momento.
+                    No premium consultations pending review at this time.
                   </p>
                   <p className="text-sm text-gray-500 mt-2">
-                    Las consultas estándar son procesadas automáticamente por IA
+                    Standard consultations are automatically processed by AI
                   </p>
                 </div>
               </div>
@@ -516,7 +516,7 @@ export default function RevisorPage() {
                               <button
                                 onClick={() => downloadFile(file.id, file.originalName)}
                                 className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
-                                title="Descargar archivo"
+                                title="Download file"
                               >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -654,14 +654,14 @@ export default function RevisorPage() {
                 {/* Reviewer Comment */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-3">
-                    💬 Comentario del Revisor (Opcional)
+                    💬 Reviewer Comment (Optional)
                   </label>
                   <textarea
                     value={reviewerComment}
                     onChange={(e) => setReviewerComment(e.target.value)}
                     className="modern-input"
                     rows={3}
-                    placeholder="Agregar comentarios adicionales, aclaraciones o notas para el usuario..."
+                    placeholder="Add additional comments, clarifications or notes for the user..."
                   />
                 </div>
               </div>
@@ -671,7 +671,7 @@ export default function RevisorPage() {
                 <button
                   onClick={() => updateChat(
                     selectedChat.id, 
-                    "validado", 
+                    "validated", 
                     newResponse !== selectedChat.response ? newResponse : undefined
                   )}
                   disabled={isUpdating}
@@ -680,17 +680,17 @@ export default function RevisorPage() {
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                   </svg>
-                  {isUpdating ? "Procesando..." : "Validar y Aprobar"}
+                  {isUpdating ? "Processing..." : "Validate & Approve"}
                 </button>
                 <button
-                  onClick={() => updateChat(selectedChat.id, "revision_requerida")}
+                  onClick={() => updateChat(selectedChat.id, "review_required")}
                   disabled={isUpdating}
                   className="btn-secondary flex-1 justify-center disabled:opacity-50 disabled:cursor-not-allowed bg-orange-600 hover:bg-orange-700 text-white"
                 >
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.268 15.5c-.77.833.192 2.5 1.732 2.5z" />
                   </svg>
-                  {isUpdating ? "Procesando..." : "Marcar para Más Revisión"}
+                  {isUpdating ? "Processing..." : "Mark for Further Review"}
                 </button>
                 <button
                   onClick={() => {

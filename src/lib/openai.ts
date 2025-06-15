@@ -27,7 +27,7 @@ const openai = new OpenAI({
 
 // Types for our enhanced workflow
 interface ClassificationResult {
-  domain: 'Fiscal' | 'Laboral' | 'Contable';
+  domain: 'Tax' | 'Labor' | 'Accounting' | 'Fiscal' | 'Laboral' | 'Contable';
   structuredQuestion: string;
   confidence: number;
   originalQuestion: string;
@@ -78,11 +78,15 @@ export async function generateFiscalResponse(userMessage: string): Promise<strin
       let finalSources = realSources;
       if (realSources.length === 0) {
         const fallbackSources = {
+          'Tax': ['https://www.agenciatributaria.es', 'https://www.boe.es'],
+          'Labor': ['https://www.mitramiss.gob.es', 'https://www.seg-social.es'],
+          'Accounting': ['https://www.icac.gob.es', 'https://www.boe.es'],
+          // Keep legacy names for compatibility
           'Fiscal': ['https://www.agenciatributaria.es', 'https://www.boe.es'],
           'Laboral': ['https://www.mitramiss.gob.es', 'https://www.seg-social.es'],
           'Contable': ['https://www.icac.gob.es', 'https://www.boe.es']
         };
-        finalSources = fallbackSources[classification.domain as keyof typeof fallbackSources] || fallbackSources['Fiscal'];
+        finalSources = fallbackSources[classification.domain as keyof typeof fallbackSources] || fallbackSources['Tax'];
       }
       
       return formatResponseWithReferences(fullResponse, finalSources);
@@ -90,9 +94,9 @@ export async function generateFiscalResponse(userMessage: string): Promise<strin
     } catch (perplexityError) {
       console.error('Perplexity error in non-streaming:', perplexityError);
       
-      return `Lo siento, ha ocurrido un error al procesar tu consulta sobre ${classification.domain}. 
+      return `Sorry, an error occurred while processing your query about ${classification.domain}. 
       
-Un profesional revisará tu pregunta: "${classification.structuredQuestion}" y te proporcionará una respuesta personalizada pronto.`;
+A professional will review your question: "${classification.structuredQuestion}" and provide you with a personalized response soon.`;
     }
     
   } catch (error) {
@@ -101,21 +105,21 @@ Un profesional revisará tu pregunta: "${classification.structuredQuestion}" y t
     // Try to at least provide classification information
     try {
       const classification = await classifyAndStructureQuestion(userMessage);
-      return `Gracias por tu consulta sobre **${classification.domain}**.
+      return `Thank you for your query about **${classification.domain}**.
 
-**Pregunta estructurada para revisión:** ${classification.structuredQuestion}
+**Structured question for review:** ${classification.structuredQuestion}
 
-Actualmente experimentamos dificultades técnicas con nuestro sistema de respuesta automática. Tu consulta ha sido clasificada correctamente y será revisada por un profesional especializado en ${classification.domain.toLowerCase()}.
+We are currently experiencing technical difficulties with our automated response system. Your query has been correctly classified and will be reviewed by a professional specialized in ${classification.domain.toLowerCase()}.
 
-**Próximos pasos:**
-1. Tu consulta queda registrada en el sistema
-2. Un especialista la revisará en las próximas horas  
-3. Recibirás una respuesta detallada y personalizada
+**Next steps:**
+1. Your query is registered in the system
+2. A specialist will review it in the coming hours  
+3. You will receive a detailed and personalized response
 
-Por favor, revisa tu historial de consultas más tarde para ver la respuesta del especialista.`;
+Please check your query history later to see the specialist's response.`;
     } catch (classificationError) {
       console.error('Error in classification fallback:', classificationError);
-      return "Ha ocurrido un error al procesar tu consulta. Un profesional la revisará pronto y te proporcionará una respuesta personalizada.";
+      return "An error occurred while processing your query. A professional will review it soon and provide you with a personalized response.";
     }
   }
 }
@@ -127,29 +131,33 @@ export async function classifyAndStructureQuestion(userMessage: string): Promise
       messages: [
         {
           role: "system",
-          content: `Eres un experto en clasificación de consultas legales y fiscales en España. Tu tarea es:
+          content: `You are an expert in classifying legal, tax, and business consultations. Your task is to:
 
-1. CLASIFICAR la consulta en uno de estos dominios:
-   - "Fiscal": Impuestos, IRPF, IVA, declaraciones, tributación, AEAT, desgravaciones, retenciones
-   - "Laboral": Contratos, nóminas, despidos, bajas, convenios, derecho laboral, seguridad social
-   - "Contable": Contabilidad, balance, libros contables, amortizaciones, provisiones, estados financieros
+1. CLASSIFY the consultation into one of these domains:
+   - "Tax": Taxes, income tax, VAT, declarations, taxation, deductions, withholdings, tax planning
+   - "Labor": Contracts, payroll, terminations, leaves, labor law, social security, employment rights
+   - "Accounting": Accounting, balance sheets, financial statements, depreciation, provisions, bookkeeping
 
-2. ESTRUCTURAR la pregunta de forma más clara y específica, manteniendo el contexto español.
+2. STRUCTURE the question more clearly and specifically, maintaining the original language and context.
 
-3. RESPONDER SOLO en formato JSON con esta estructura exacta:
+3. RESPOND ONLY in JSON format with this exact structure:
 {
-  "domain": "Fiscal|Laboral|Contable",
-  "structuredQuestion": "Pregunta reformulada de forma clara y específica",
+  "domain": "Tax|Labor|Accounting",
+  "structuredQuestion": "Reformulated question in a clear and specific way",
   "confidence": 0.95,
-  "originalQuestion": "Pregunta original del usuario"
+  "originalQuestion": "User's original question"
 }
 
-Ejemplos:
-- "¿Puedo desgravar mi ordenador?" → Fiscal
-- "Me han despedido, ¿qué hago?" → Laboral  
-- "¿Cómo hago el balance?" → Contable
+IMPORTANT: Always respond in the same language as the input question. Maintain all cultural and jurisdictional context from the original question.
 
-Si no estás seguro, elige el dominio más probable y baja la confianza.`
+Examples:
+- "Can I deduct my computer?" → Tax
+- "I was fired, what should I do?" → Labor  
+- "How do I create a balance sheet?" → Accounting
+- "¿Puedo desgravar mi ordenador?" → Tax (respond in Spanish)
+- "Me han despedido, ¿qué hago?" → Labor (respond in Spanish)
+
+If you're not sure, choose the most likely domain and lower the confidence.`
         },
         {
           role: "user",
@@ -165,7 +173,7 @@ Si no estás seguro, elige el dominio más probable y baja la confianza.`
     try {
       const parsed = JSON.parse(responseText);
       return {
-        domain: parsed.domain || 'Fiscal',
+        domain: parsed.domain || 'Tax',
         structuredQuestion: parsed.structuredQuestion || userMessage,
         confidence: parsed.confidence || 0.8,
         originalQuestion: userMessage
@@ -174,7 +182,7 @@ Si no estás seguro, elige el dominio más probable y baja la confianza.`
       console.error('Error parsing classification JSON:', parseError);
       // Fallback classification
       return {
-        domain: 'Fiscal',
+        domain: 'Tax',
         structuredQuestion: userMessage,
         confidence: 0.5,
         originalQuestion: userMessage
@@ -183,7 +191,7 @@ Si no estás seguro, elige el dominio más probable y baja la confianza.`
   } catch (error) {
     console.error('Error in classification:', error);
     return {
-      domain: 'Fiscal',
+      domain: 'Tax',
       structuredQuestion: userMessage,
       confidence: 0.3,
       originalQuestion: userMessage
@@ -193,6 +201,40 @@ Si no estás seguro, elige el dominio más probable y baja la confianza.`
 
 export function getDomainForQuestion(domain: string): { domains: string[], context: string } {
   const domainConfig = {
+    'Tax': {
+      domains: [
+        'agenciatributaria.es',
+        'boe.es', 
+        'sede.agenciatributaria.gob.es',
+        'fiscal.es',
+        'expansion.com',
+        'eleconomista.es'
+      ],
+      context: 'tax and fiscal advisory'
+    },
+    'Labor': {
+      domains: [
+        'mitramiss.gob.es',
+        'seg-social.es',
+        'boe.es',
+        'laboral.net',
+        'expansion.com',
+        'eleconomista.es'
+      ],
+      context: 'labor and employment advisory'
+    },
+    'Accounting': {
+      domains: [
+        'icac.gob.es',
+        'boe.es',
+        'registradores.org',
+        'aeca.es',
+        'expansion.com',
+        'eleconomista.es'
+      ],
+      context: 'accounting and financial advisory'
+    },
+    // Keep legacy names for compatibility
     'Fiscal': {
       domains: [
         'agenciatributaria.es',
@@ -202,7 +244,7 @@ export function getDomainForQuestion(domain: string): { domains: string[], conte
         'expansion.com',
         'eleconomista.es'
       ],
-      context: 'fiscal and tax law in Spain'
+      context: 'tax and fiscal advisory'
     },
     'Laboral': {
       domains: [
@@ -213,7 +255,7 @@ export function getDomainForQuestion(domain: string): { domains: string[], conte
         'expansion.com',
         'eleconomista.es'
       ],
-      context: 'labor and employment law in Spain'
+      context: 'labor and employment advisory'
     },
     'Contable': {
       domains: [
@@ -224,11 +266,11 @@ export function getDomainForQuestion(domain: string): { domains: string[], conte
         'expansion.com',
         'eleconomista.es'
       ],
-      context: 'accounting and financial reporting in Spain'
+      context: 'accounting and financial advisory'
     }
   };
   
-  return domainConfig[domain as keyof typeof domainConfig] || domainConfig['Fiscal'];
+  return domainConfig[domain as keyof typeof domainConfig] || domainConfig['Tax'];
 }
 
 export async function* searchWithPerplexityStream(question: string, domain: string): AsyncGenerator<string> {
@@ -243,9 +285,10 @@ export async function* searchWithPerplexityStream(question: string, domain: stri
   }
 
   const domainConfig = getDomainForQuestion(domain);
+  
   const prompt = `Please provide a comprehensive answer about ${domainConfig.context} for the following question: ${question}
 
-Please answer in Spanish and focus specifically on Spanish regulations and practices.`;
+Always respond in the same language as the question not in the language of the sources. Provide accurate, professional, and helpful responses based on current regulations.`;
 
   try {
     console.log('Making Perplexity API request for domain:', domain);
@@ -260,7 +303,11 @@ Please answer in Spanish and focus specifically on Spanish regulations and pract
         messages: [
           {
             role: 'system',
-            content: `You are an expert advisor in Spanish ${domainConfig.context}. Provide accurate, professional, and helpful responses about Spanish regulations and practices.`
+            content: `You are an expert professional advisor specializing in ${domainConfig.context}. 
+
+Always respond in the same language as the user's question. Provide accurate, professional, and helpful responses based on current regulations. Be concise and friendly.
+
+Focus on practical, actionable advice that helps solve the user's specific situation.`
           },
           {
             role: 'user',
@@ -399,7 +446,7 @@ async function extractSourcesFromPerplexity(question: string, domain: string): P
   }
 }
 
-export async function* streamEnhancedAEATResponse(userMessage: string): AsyncGenerator<StreamChunk> {
+export async function* streamEnhancedResponse(userMessage: string): AsyncGenerator<StreamChunk> {
   try {
     // Validate environment first
     const envCheck = validateEnvironment();
@@ -416,14 +463,14 @@ export async function* streamEnhancedAEATResponse(userMessage: string): AsyncGen
     
     yield {
       type: 'classification',
-      content: `Consulta clasificada como: **${classification.domain}**\n\nPregunta estructurada: ${classification.structuredQuestion}`,
+      content: `Query classified as: **${classification.domain}**\n\nStructured question: ${classification.structuredQuestion}`,
       classification
     };
 
     // Step 2: Use Perplexity to get the enhanced answer
     yield {
       type: 'perplexity_start',
-      content: 'Buscando respuesta especializada...'
+      content: 'Searching for specialized answer...'
     };
 
     let fullResponse = '';
@@ -470,6 +517,22 @@ export async function* streamEnhancedAEATResponse(userMessage: string): AsyncGen
       if (realSources.length === 0) {
         console.log('No real sources found, using fallback sources');
         const fallbackSources = {
+          'Tax': [
+            'https://www.agenciatributaria.es',
+            'https://www.boe.es',  
+            'https://sede.agenciatributaria.gob.es'
+          ],
+          'Labor': [
+            'https://www.mitramiss.gob.es',
+            'https://www.seg-social.es',
+            'https://www.boe.es'
+          ],
+          'Accounting': [
+            'https://www.icac.gob.es',
+            'https://www.boe.es',
+            'https://www.registradores.org'
+          ],
+          // Legacy domain names for compatibility
           'Fiscal': [
             'https://www.agenciatributaria.es',
             'https://www.boe.es',  
@@ -486,7 +549,7 @@ export async function* streamEnhancedAEATResponse(userMessage: string): AsyncGen
             'https://www.registradores.org'
           ]
         };
-        finalSources = fallbackSources[classification.domain as keyof typeof fallbackSources] || fallbackSources['Fiscal'];
+        finalSources = fallbackSources[classification.domain as keyof typeof fallbackSources] || fallbackSources['Tax'];
       } else {
         console.log('Using real sources from Perplexity:', realSources);
       }
@@ -502,26 +565,30 @@ export async function* streamEnhancedAEATResponse(userMessage: string): AsyncGen
       console.error('Perplexity error:', perplexityError);
       
       // Provide a professional error response with classification info
-      const errorResponse = `Gracias por tu consulta sobre **${classification.domain}**.
+      const errorResponse = `Thank you for your query about **${classification.domain}**.
 
-**Pregunta estructurada para revisión:** ${classification.structuredQuestion}
+**Structured question for review:** ${classification.structuredQuestion}
 
-Actualmente experimentamos dificultades técnicas con nuestro sistema de respuesta automática. Tu consulta ha sido clasificada correctamente y será revisada por un profesional especializado en ${classification.domain.toLowerCase()}.
+We are currently experiencing technical difficulties with our automated response system. Your query has been correctly classified and will be reviewed by a professional specialized in ${classification.domain.toLowerCase()}.
 
-**Próximos pasos:**
-1. Tu consulta queda registrada en el sistema
-2. Un especialista la revisará en las próximas horas
-3. Recibirás una respuesta detallada y personalizada
+**Next steps:**
+1. Your query is registered in the system
+2. A specialist will review it in the coming hours
+3. You will receive a detailed and personalized response
 
-Por favor, revisa tu historial de consultas más tarde para ver la respuesta del especialista.`;
+Please check your query history later to see the specialist's response.`;
       
       const fallbackSources = {
+        'Tax': ['https://www.agenciatributaria.es', 'https://www.boe.es'],
+        'Labor': ['https://www.mitramiss.gob.es', 'https://www.seg-social.es'],
+        'Accounting': ['https://www.icac.gob.es', 'https://www.boe.es'],
+        // Keep legacy names for compatibility
         'Fiscal': ['https://www.agenciatributaria.es', 'https://www.boe.es'],
         'Laboral': ['https://www.mitramiss.gob.es', 'https://www.seg-social.es'],
         'Contable': ['https://www.icac.gob.es', 'https://www.boe.es']
       };
       
-      const sourcesForFallback = fallbackSources[classification.domain as keyof typeof fallbackSources] || fallbackSources['Fiscal'];
+      const sourcesForFallback = fallbackSources[classification.domain as keyof typeof fallbackSources] || fallbackSources['Tax'];
       
       // Still yield a complete response so it gets saved to the database
       yield {
@@ -536,7 +603,7 @@ Por favor, revisa tu historial de consultas más tarde para ver la respuesta del
     console.error('Error in enhanced response generation:', error);
     yield {
       type: 'error',
-      content: 'Error al procesar la consulta con IA avanzada'
+      content: 'Error processing the query with advanced AI'
     };
   }
 }

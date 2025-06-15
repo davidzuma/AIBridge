@@ -35,8 +35,8 @@ http://localhost:3000/api/auth/callback/google
 
 ### 5. Verificar credenciales actuales
 Las credenciales en tu `.env.local` son:
-- GOOGLE_CLIENT_ID: `551411570887-iqukrvoosa4k79nenavdl258ot5n7su6.apps.googleusercontent.com`
-- GOOGLE_CLIENT_SECRET: `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`
+- GOOGLE_CLIENT_ID: `your-google-client-id.apps.googleusercontent.com`
+- GOOGLE_CLIENT_SECRET: `your-google-client-secret`
 
 **⚠️ IMPORTANTE**: Estas credenciales deben tener configurada la URL `http://localhost:3000/api/auth/callback/google` en Google Cloud Console.
 
@@ -77,7 +77,7 @@ Si el problema persiste:
 ## 📞 Pasos inmediatos
 
 1. Ve a Google Cloud Console
-2. Encuentra las credenciales OAuth con el Client ID: `551411570887-iqukrvoosa4k79nenavdl258ot5n7su6`
+2. Encuentra las credenciales OAuth con tu Client ID
 3. Edita las credenciales
 4. Agrega `http://localhost:3000/api/auth/callback/google` a "Authorized redirect URIs"
 5. Guarda los cambios

@@ -332,7 +332,7 @@ export default function PricingPage() {
                   Have more questions?
                 </h3>
                 <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                  Our team is here to help you. Send us a message and we'll get back to you as soon as possible.
+                  Our team is here to help you. Send us a message and we&apos;ll get back to you as soon as possible.
                 </p>
                 <button className="btn-primary">
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

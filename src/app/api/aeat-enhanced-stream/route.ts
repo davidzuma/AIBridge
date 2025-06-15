@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { streamEnhancedAEATResponse } from '@/lib/openai';
+import { streamEnhancedResponse } from '@/lib/openai';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return new Response(
-        JSON.stringify({ error: 'No autorizado. Inicia sesión para usar este servicio.' }),
+        JSON.stringify({ error: 'Unauthorized. Please sign in to use this service.' }),
         { 
           status: 401,
           headers: { 'Content-Type': 'application/json' }
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 
     if (!message || typeof message !== 'string') {
       return new Response(
-        JSON.stringify({ error: 'El mensaje es requerido y debe ser una cadena de texto.' }),
+        JSON.stringify({ error: 'Message is required and must be a text string.' }),
         { 
           status: 400,
           headers: { 'Content-Type': 'application/json' }
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     if (message.trim().length === 0) {
       return new Response(
-        JSON.stringify({ error: 'El mensaje no puede estar vacío.' }),
+        JSON.stringify({ error: 'Message cannot be empty.' }),
         { 
           status: 400,
           headers: { 'Content-Type': 'application/json' }
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     if (message.length > 2000) {
       return new Response(
-        JSON.stringify({ error: 'El mensaje es demasiado largo. Máximo 2000 caracteres.' }),
+        JSON.stringify({ error: 'Message is too long. Maximum 2000 characters.' }),
         { 
           status: 400,
           headers: { 'Content-Type': 'application/json' }
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
           let sources: string[] = [];
           
           // Stream the enhanced response
-          for await (const chunk of streamEnhancedAEATResponse(message)) {
+          for await (const chunk of streamEnhancedResponse(message)) {
             if (chunk.type === 'classification') {
               controller.enqueue(encoder.encode(`data: ${JSON.stringify({ 
                 type: 'classification', 
@@ -107,8 +107,7 @@ export async function POST(request: NextRequest) {
         } catch (error) {
           console.error('Enhanced streaming error:', error);
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ 
-            type: 'error', 
-            error: 'Error al procesar la consulta con IA avanzada' 
+            type: 'error',                error: 'Error processing query with advanced AI'
           })}\n\n`));
           controller.close();
         }
@@ -129,7 +128,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error in enhanced AEAT stream API:', error);
     return new Response(
-      JSON.stringify({ error: 'Error interno del servidor' }),
+      JSON.stringify({ error: 'Internal server error' }),
       { 
         status: 500,
         headers: { 'Content-Type': 'application/json' }

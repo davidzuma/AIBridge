@@ -29,9 +29,9 @@ export async function POST(request: NextRequest) {
         userId: session.user.id,
         content: content.trim(),
         response: finalResponse,
-        ...(sources && { sources }),
+        ...(sources && sources.length > 0 && { sources: JSON.stringify(sources) }),
         ...(classification && { classification }),
-        status: "ai_respondido",
+        status: "ai_responded",
       },
     })
 
@@ -45,13 +45,25 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Return chat with files included
+    // Return chat with files included and parsed sources
     const chatFiles = await prisma.$queryRaw`
       SELECT * FROM "ChatFile" WHERE "chatId" = ${chat.id}
     `;
     
+    // Parse sources JSON string back to array
+    let parsedSources = [];
+    if (chat.sources) {
+      try {
+        parsedSources = JSON.parse(chat.sources);
+      } catch (error) {
+        console.error('Error parsing sources JSON:', error);
+        parsedSources = [];
+      }
+    }
+    
     const chatWithFiles = {
       ...chat,
+      sources: parsedSources,
       files: chatFiles
     };
 
@@ -79,14 +91,27 @@ export async function GET() {
       },
     })
 
-    // Get files for each chat
+    // Get files for each chat and parse sources
     const chatsWithFiles = await Promise.all(
       chats.map(async (chat) => {
         const files = await prisma.$queryRaw`
           SELECT * FROM "ChatFile" WHERE "chatId" = ${chat.id}
         `;
+        
+        // Parse sources JSON string back to array
+        let parsedSources = [];
+        if (chat.sources) {
+          try {
+            parsedSources = JSON.parse(chat.sources);
+          } catch (error) {
+            console.error('Error parsing sources JSON:', error);
+            parsedSources = [];
+          }
+        }
+        
         return {
           ...chat,
+          sources: parsedSources,
           files
         };
       })

@@ -30,7 +30,7 @@ export async function GET() {
       },
     })
 
-    // Get files for each chat using raw SQL
+    // Get files for each chat using raw SQL and parse sources
     const chatsWithFiles = await Promise.all(
       chats.map(async (chat) => {
         const files = await prisma.$queryRaw<Array<{
@@ -45,8 +45,21 @@ export async function GET() {
         }>>`
           SELECT * FROM "ChatFile" WHERE "chatId" = ${chat.id}
         `;
+        
+        // Parse sources JSON string back to array
+        let parsedSources = [];
+        if (chat.sources) {
+          try {
+            parsedSources = JSON.parse(chat.sources);
+          } catch (error) {
+            console.error('Error parsing sources JSON:', error);
+            parsedSources = [];
+          }
+        }
+        
         return {
           ...chat,
+          sources: parsedSources,
           files
         };
       })
@@ -77,7 +90,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Chat ID y status son requeridos" }, { status: 400 })
     }
 
-    if (!["validado", "revision_requerida"].includes(status)) {
+    if (!["validated", "review_required"].includes(status)) {
       return NextResponse.json({ error: "Status inválido" }, { status: 400 })
     }
 

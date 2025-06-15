@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     const updatedChat = await prisma.chat.update({
       where: { id: chatId },
       data: {
-        status: 'revision_requerida',
+        status: 'review_required',
         updatedAt: new Date()
       }
     })

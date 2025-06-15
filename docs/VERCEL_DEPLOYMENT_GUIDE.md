@@ -70,10 +70,10 @@ In your Vercel project dashboard, go to **Settings → Environment Variables** a
 ```bash
 DATABASE_URL=postgresql://your-neon-connection-string
 NEXTAUTH_URL=https://your-project-name.vercel.app
-NEXTAUTH_SECRET=A9VauAFzXb7iYkGuZpe1ZLsbZ2LpTdwsz+Z33NJvrHw=
-GOOGLE_CLIENT_ID=551411570887-iqukrvoosa4k79nenavdl258ot5n7su6.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=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
-OPENAI_API_KEY=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
+NEXTAUTH_SECRET=your-nextauth-secret-here
+GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+OPENAI_API_KEY=sk-proj-your-openai-api-key-here
 ```
 
 ### ✅ **Step 5: Initialize Production Database**
