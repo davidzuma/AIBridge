@@ -2,6 +2,7 @@
 
 import { useSession, signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { useEffect, useState } from "react"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -46,7 +47,7 @@ export default function RevisorPage() {
     if (status === "unauthenticated") {
       router.push("/")
     }
-    if (session?.user?.role !== "revisor") {
+    if (session?.user?.role !== "reviewer") {
       router.push("/usuario")
     }
   }, [session, status, router])
@@ -192,12 +193,23 @@ export default function RevisorPage() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                  Panel de Revisor
+                  Reviewer Dashboard
                 </h1>
-                <p className="text-sm text-gray-600">Gestión de usuarios Premium</p>
+                <p className="text-sm text-gray-600">AIBridge Advisory - Premium User Management</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              {/* User Dashboard Navigation */}
+              <Link
+                href="/usuario"
+                className="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                User Dashboard
+              </Link>
+              
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
                   <span className="text-white text-sm font-medium">
@@ -206,14 +218,14 @@ export default function RevisorPage() {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-medium text-gray-900">{session?.user?.name}</p>
-                  <p className="text-xs text-gray-500">Revisor Profesional</p>
+                  <p className="text-xs text-gray-500">Professional Reviewer</p>
                 </div>
               </div>
               <button
                 onClick={() => signOut()}
                 className="btn-secondary text-sm"
               >
-                Cerrar sesión
+                Sign Out
               </button>
             </div>
           </div>

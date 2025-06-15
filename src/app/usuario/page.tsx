@@ -2,6 +2,7 @@
 
 import { useSession, signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { useEffect, useState } from "react"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -50,9 +51,7 @@ export default function UsuarioPage() {
     if (status === "unauthenticated") {
       router.push("/")
     }
-    if (session?.user?.role === "revisor") {
-      router.push("/revisor")
-    }
+    // Removed automatic redirect for reviewers - they can access both dashboards
   }, [session, status, router])
 
   useEffect(() => {
@@ -300,7 +299,7 @@ export default function UsuarioPage() {
                 </div>
                 <div>
                   <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                    MZ Asesoría Fiscal
+                    AIBridge Advisory
                   </h1>
                   {userPremium && (
                     <span className="inline-flex items-center px-2 py-0.5 text-xs font-semibold bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-full">
@@ -314,6 +313,32 @@ export default function UsuarioPage() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              {/* Reviewer Navigation - show only for reviewers */}
+              {session?.user?.role === "reviewer" && (
+                <Link
+                  href="/revisor"
+                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Reviewer Dashboard
+                </Link>
+              )}
+              
+              {/* Reviewer Registration - show only for regular users */}
+              {session?.user?.role === "user" && (
+                <Link
+                  href="/reviewer-registration"
+                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Become a Reviewer
+                </Link>
+              )}
+
               <div className="hidden sm:flex items-center space-x-3">
                 <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                   <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -321,6 +346,11 @@ export default function UsuarioPage() {
                   </svg>
                 </div>
                 <span className="text-sm font-medium text-gray-700">{session?.user?.name}</span>
+                {session?.user?.role === "reviewer" && (
+                  <span className="inline-flex items-center px-2 py-0.5 text-xs font-semibold bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full">
+                    REVIEWER
+                  </span>
+                )}
               </div>
               <button
                 onClick={() => signOut()}
@@ -329,7 +359,7 @@ export default function UsuarioPage() {
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
-                Salir
+                Sign Out
               </button>
             </div>
           </div>

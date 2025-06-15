@@ -1,13 +1,21 @@
 import { NextResponse } from "next/server"
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-import { writeFile } from "fs/promises"
+import { writeFile, mkdir } from "fs/promises"
 import path from "path"
 
 export async function POST(request: Request) {
   try {
+    // Get the current session to identify the user
+    const session = await getServerSession(authOptions)
+    
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: "You must be logged in to register as a reviewer" }, { status: 401 })
+    }
+
     const formData = await request.formData()
     
-    const email = formData.get('email') as string
     const fullName = formData.get('fullName') as string
     const specialization = formData.get('specialization') as string
     const professionalTitle = formData.get('professionalTitle') as string
@@ -18,17 +26,36 @@ export async function POST(request: Request) {
     const bio = formData.get('bio') as string
     const file = formData.get('certification') as File
 
-    if (!email || !fullName || !specialization || !professionalTitle || !licenseNumber || !experience || !bio || !file) {
+    if (!fullName || !specialization || !professionalTitle || !licenseNumber || !experience || !bio || !file) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
+    // Check if user already has a reviewer application
+    const existingApplication = await prisma.reviewerApplication.findUnique({
+      where: { userEmail: session.user.email }
     })
 
-    if (existingUser) {
-      return NextResponse.json({ error: "User with this email already exists" }, { status: 400 })
+    if (existingApplication) {
+      return NextResponse.json({ 
+        error: "You have already submitted a reviewer application. Please contact support if you need to update it." 
+      }, { status: 400 })
+    }
+
+    // Get current user
+    const currentUser = await prisma.user.findUnique({
+      where: { email: session.user.email }
+    })
+
+    if (!currentUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 })
+    }
+
+    // Ensure uploads directory exists
+    const uploadsDir = path.join(process.cwd(), 'uploads', 'certifications')
+    try {
+      await mkdir(uploadsDir, { recursive: true })
+    } catch (error) {
+      // Directory might already exist, ignore error
     }
 
     // Save certification file
@@ -36,24 +63,23 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(bytes)
     
     const fileName = `cert_${Date.now()}_${file.name}`
-    const filePath = path.join(process.cwd(), 'uploads', 'certifications', fileName)
+    const filePath = path.join(uploadsDir, fileName)
     
     await writeFile(filePath, buffer)
 
-    // Create user account directly as verified reviewer
-    const user = await prisma.user.create({
+    // Update user role to reviewer and verify email
+    const updatedUser = await prisma.user.update({
+      where: { email: session.user.email },
       data: {
-        email,
-        name: fullName,
-        role: 'revisor',
-        emailVerified: new Date()
+        role: 'reviewer',
+        emailVerified: new Date(),
+        name: fullName // Update name if provided
       }
     })
-
     // Store the application record for reference
     const application = await prisma.reviewerApplication.create({
       data: {
-        userEmail: email,
+        userEmail: session.user.email,
         userName: fullName,
         professionalTitle,
         licenseNumber,
@@ -68,8 +94,14 @@ export async function POST(request: Request) {
     })
 
     return NextResponse.json({ 
-      message: "Registration successful! You can now sign in as a verified reviewer.",
-      success: true
+      message: "Registration successful! You are now a verified reviewer and can access both user and reviewer features.",
+      success: true,
+      user: {
+        id: updatedUser.id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        role: updatedUser.role
+      }
     })
 
   } catch (error) {

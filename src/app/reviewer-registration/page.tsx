@@ -90,8 +90,10 @@ export default function ReviewerRegistrationPage() {
       })
 
       if (response.ok) {
-        alert('Registration successful! You can now sign in as a verified reviewer.')
-        router.push('/')
+        const result = await response.json()
+        alert('Registration successful! You are now a verified reviewer and can access both user and reviewer features.')
+        // Redirect to reviewer dashboard
+        window.location.href = '/revisor'
       } else {
         const error = await response.json()
         alert(`Error: ${error.error || 'Failed to register'}`)

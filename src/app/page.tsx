@@ -11,11 +11,8 @@ export default function Home() {
 
   useEffect(() => {
     if (session?.user) {
-      if (session.user.role === "revisor") {
-        router.push("/revisor")
-      } else {
-        router.push("/usuario")
-      }
+      // Default to user dashboard for all users (both users and reviewers can access it)
+      router.push("/usuario")
     }
   }, [session, router])
 

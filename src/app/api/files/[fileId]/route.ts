@@ -49,7 +49,7 @@ export async function GET(
     // Check if user has permission to access this file
     const canAccess = 
       chatFile.userId === session.user.id || // Owner
-      session.user.role === "revisor" // Reviewer
+      session.user.role === "reviewer" // Reviewer
 
     if (!canAccess) {
       return NextResponse.json({ error: "No tienes permisos para acceder a este archivo" }, { status: 403 })

@@ -11,7 +11,7 @@ export async function GET() {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 })
     }
 
-    if (session.user.role !== "revisor") {
+    if (session.user.role !== "reviewer") {
       return NextResponse.json({ error: "Acceso denegado" }, { status: 403 })
     }
 
@@ -67,7 +67,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 })
     }
 
-    if (session.user.role !== "revisor") {
+    if (session.user.role !== "reviewer") {
       return NextResponse.json({ error: "Acceso denegado" }, { status: 403 })
     }
 
