@@ -1,5 +1,26 @@
 import OpenAI from 'openai';
 
+// Environment validation helper
+export function validateEnvironment() {
+  const required = {
+    PPX_API_KEY: process.env.PPX_API_KEY,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    NODE_ENV: process.env.NODE_ENV
+  };
+  
+  const missing = Object.entries(required)
+    .filter(([, value]) => !value)
+    .map(([key]) => key);
+  
+  if (missing.length > 0) {
+    console.error('Missing environment variables:', missing);
+    return { valid: false, missing };
+  }
+  
+  console.log('Environment validation passed');
+  return { valid: true, missing: [] };
+}
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -213,7 +234,11 @@ export function getDomainForQuestion(domain: string): { domains: string[], conte
 export async function* searchWithPerplexityStream(question: string, domain: string): AsyncGenerator<string> {
   const PPX_API_KEY = process.env.PPX_API_KEY;
   
+  console.log('PPX_API_KEY check:', PPX_API_KEY ? 'Found' : 'Not found');
+  console.log('Environment NODE_ENV:', process.env.NODE_ENV);
+  
   if (!PPX_API_KEY) {
+    console.error('PPX_API_KEY is missing from environment variables');
     throw new Error('Perplexity API key not found');
   }
 
@@ -223,6 +248,7 @@ export async function* searchWithPerplexityStream(question: string, domain: stri
 Please answer in Spanish and focus specifically on Spanish regulations and practices.`;
 
   try {
+    console.log('Making Perplexity API request for domain:', domain);
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
@@ -250,8 +276,13 @@ Please answer in Spanish and focus specifically on Spanish regulations and pract
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Perplexity API error:', response.status, errorText);
-      throw new Error(`Perplexity API error: ${response.status}`);
+      console.error('Perplexity API error details:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorText,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+      throw new Error(`Perplexity API error: ${response.status} - ${errorText}`);
     }
 
     const reader = response.body?.getReader();
@@ -370,6 +401,16 @@ async function extractSourcesFromPerplexity(question: string, domain: string): P
 
 export async function* streamEnhancedAEATResponse(userMessage: string): AsyncGenerator<StreamChunk> {
   try {
+    // Validate environment first
+    const envCheck = validateEnvironment();
+    if (!envCheck.valid) {
+      yield {
+        type: 'error',
+        content: `Configuration error: Missing environment variables: ${envCheck.missing.join(', ')}`
+      };
+      return;
+    }
+
     // Step 1: Classify and structure the question
     const classification = await classifyAndStructureQuestion(userMessage);
     
