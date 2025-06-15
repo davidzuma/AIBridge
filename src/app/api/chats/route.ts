@@ -12,21 +12,26 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 })
     }
 
-    const { content, files = [] } = await request.json()
+    const { content, response, sources = [], classification, files = [] } = await request.json()
 
     if (!content || content.trim() === "") {
       return NextResponse.json({ error: "El contenido es requerido" }, { status: 400 })
     }
 
-    // Generate AI response automatically
-    const aiResponse = await generateFiscalResponse(content.trim())
+    // If response is provided (from streaming), use it; otherwise generate AI response
+    let finalResponse = response
+    if (!finalResponse) {
+      finalResponse = await generateFiscalResponse(content.trim())
+    }
 
     const chat = await prisma.chat.create({
       data: {
         userId: session.user.id,
         content: content.trim(),
-        response: aiResponse,
-        status: "ai_respondido", // Always start with AI response
+        response: finalResponse,
+        ...(sources && { sources }),
+        ...(classification && { classification }),
+        status: "ai_respondido",
       },
     })
 

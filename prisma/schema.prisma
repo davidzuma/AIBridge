@@ -68,6 +68,8 @@ model Chat {
   userId          String
   content         String
   response        String         @default("Gracias por tu consulta, revisaremos pronto")
+  sources         String[]       @default([]) // Array of source URLs
+  classification  String?        // Domain classification (Fiscal, Laboral, Contable)
   status          String         @default("pendiente") // "pendiente", "ai_respondido", "validado", "revision_requerida"
   reviewerComment String?
   createdAt       DateTime       @default(now())

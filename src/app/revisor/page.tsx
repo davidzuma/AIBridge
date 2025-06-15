@@ -3,11 +3,15 @@
 import { useSession, signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 interface Chat {
   id: string
   content: string
   response: string
+  sources?: string[]
+  classification?: string
   status: string
   reviewerComment?: string
   createdAt: string
@@ -514,6 +518,20 @@ export default function RevisorPage() {
                   </div>
                 </div>
 
+                {/* Classification Display */}
+                {selectedChat.classification && (
+                  <div className="mb-4">
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
+                      📂 Clasificación
+                    </label>
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                        {selectedChat.classification}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 {/* Current AI Response */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 mb-3">
@@ -528,7 +546,79 @@ export default function RevisorPage() {
                       </div>
                       <span className="text-blue-800 font-medium text-sm">Respuesta generada por IA</span>
                     </div>
-                    <p className="text-blue-900 leading-relaxed">{selectedChat.response}</p>
+                    <div className="prose prose-sm max-w-none text-blue-900 leading-relaxed">
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          h1: ({ children }) => <h1 className="text-xl font-bold text-blue-900 mb-4">{children}</h1>,
+                          h2: ({ children }) => <h2 className="text-lg font-semibold text-blue-900 mb-3">{children}</h2>,
+                          h3: ({ children }) => <h3 className="text-md font-semibold text-blue-900 mb-2">{children}</h3>,
+                          p: ({ children }) => <p className="mb-3 text-blue-900">{children}</p>,
+                          ul: ({ children }) => <ul className="list-disc pl-6 mb-3 space-y-1">{children}</ul>,
+                          ol: ({ children }) => <ol className="list-decimal pl-6 mb-3 space-y-1">{children}</ol>,
+                          li: ({ children }) => <li className="text-blue-900">{children}</li>,
+                          strong: ({ children }) => <strong className="font-semibold text-blue-800">{children}</strong>,
+                          em: ({ children }) => <em className="italic text-blue-700">{children}</em>,
+                          code: ({ children }) => <code className="bg-blue-100 px-1 py-0.5 rounded text-sm font-mono">{children}</code>,
+                          blockquote: ({ children }) => <blockquote className="border-l-4 border-blue-400 pl-4 italic text-blue-700 mb-3">{children}</blockquote>,
+                          a: ({ href, children }) => (
+                            <a 
+                              href={href} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 underline"
+                            >
+                              {children}
+                            </a>
+                          ),
+                        }}
+                      >
+                        {selectedChat.response}
+                      </ReactMarkdown>
+                    </div>
+
+                    {/* Sources Section */}
+                    {selectedChat.sources && selectedChat.sources.length > 0 && (
+                      <div className="border-t border-blue-200 mt-4 pt-4">
+                        <div className="flex items-center space-x-2 mb-3">
+                          <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                          </svg>
+                          <h4 className="font-semibold text-blue-900 text-sm">Fuentes Oficiales</h4>
+                        </div>
+                        <div className="grid grid-cols-1 gap-2">
+                          {selectedChat.sources.map((source: string, index: number) => (
+                            <a
+                              key={index}
+                              href={source}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-start space-x-3 p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors group border border-blue-200"
+                            >
+                              <div className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white text-xs font-bold rounded-full flex items-center justify-center mt-0.5">
+                                {index + 1}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <span className="text-sm text-blue-700 group-hover:text-blue-800 break-all leading-relaxed">{source}</span>
+                                <div className="text-xs text-blue-500 mt-1">
+                                  {(() => {
+                                    try {
+                                      const url = new URL(source);
+                                      return url.hostname;
+                                    } catch {
+                                      return 'Enlace externo';
+                                    }
+                                  })()}
+                                </div>
+                              </div>
+                              <svg className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
