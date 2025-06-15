@@ -35,6 +35,12 @@ export default function ReviewerRegistrationPage() {
     return null
   }
 
+  // Redirect if user is already a reviewer
+  if (session?.user?.role === "reviewer") {
+    router.push("/revisor")
+    return null
+  }
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
