@@ -1,36 +1,69 @@
-# Gestoría Fiscal - MZChat
+# AIBridge - Tax & Legal Consultation Platform
 
-Una aplicación web para gestión fiscal con chat inteligente, construida con Next.js, TypeScript, y PostgreSQL.
+AIBridge is a modern web application that connects users with tax and legal professionals through an intelligent chat system. Built with Next.js 15, TypeScript, and powered by AI for enhanced consultation experiences.
 
-## 📚 Documentación
+## 🎯 Overview
 
-Para información detallada sobre configuración, despliegue y desarrollo, consulta la documentación en la carpeta [`docs/`](./docs/):
+AIBridge serves as a bridge between users seeking tax and legal advice and certified professionals who can provide expert guidance. The platform features AI-enhanced responses that are validated by human experts, ensuring accuracy and reliability.
 
-- **[📋 Estado del Proyecto](./docs/PROJECT_STATUS.md)** - Estado actual y funcionalidades
-- **[🛠️ Configuración del Entorno](./docs/ENVIRONMENT_SETUP.md)** - Guía de configuración completa
-- **[🔐 Configuración de Google OAuth](./docs/GOOGLE_OAUTH_SETUP.md)** - Setup de autenticación
-- **[🚀 Guía de Despliegue en Vercel](./docs/VERCEL_DEPLOYMENT_GUIDE.md)** - Instrucciones de despliegue
-- **[🧹 Resumen de Limpieza](./docs/CLEANUP_SUMMARY.md)** - Historial de optimizaciones
+## ✨ Key Features
 
-## Características
+### � User Features
+- 💬 **Intelligent Chat System**: Ask tax and legal questions with AI-powered responses
+- 📁 **File Upload**: Attach documents to provide context for your consultations
+- 📊 **Consultation History**: Track all your past queries and responses
+- ⭐ **Premium Features**: Human validation of AI responses for enhanced accuracy
+- 🎯 **Smart Classification**: Automatic categorization of queries (Tax, Legal, Accounting)
 
-- 🔐 Autenticación con Google usando NextAuth
-- 📊 Base de datos PostgreSQL con Prisma ORM
-- 👥 Sistema de roles (usuario/revisor)
-- 💬 Chat de consultas fiscales
-- 📋 Panel de administración para revisores
-- 🎨 Interfaz moderna con Tailwind CSS
-- 🚀 Optimizado para despliegue en Vercel
+### �‍💼 Reviewer Features
+- 🛠️ **Admin Dashboard**: Comprehensive panel for managing consultations
+- ✅ **Response Validation**: Review and approve AI-generated responses
+- 💬 **Professional Commentary**: Add expert insights and corrections
+- 📈 **Analytics**: Track consultation metrics and performance
+- � **Quality Control**: Ensure accuracy and compliance of all responses
 
-## Tecnologías
+### 🤖 AI-Enhanced System
+- 🧠 **OpenAI Integration**: Powered by advanced language models
+- 📚 **Context-Aware**: Analyzes uploaded documents for better responses
+- 🎯 **Domain-Specific**: Specialized in tax and legal consultation
+- � **Continuous Learning**: Improves through human reviewer feedback
 
-- **Framework**: Next.js 15 con App Router
-- **Lenguaje**: TypeScript
-- **Estilos**: Tailwind CSS
-- **Base de datos**: PostgreSQL
-- **ORM**: Prisma
-- **Autenticación**: NextAuth.js
-- **Despliegue**: Vercel
+## 🛠️ Technology Stack
+
+### Frontend
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript 5
+- **Styling**: Tailwind CSS 4
+- **Components**: React 19 with React DOM
+- **Markdown**: React-Markdown with remark-gfm
+
+### Backend & Database
+- **Database**: PostgreSQL (production) / SQLite (development)
+- **ORM**: Prisma Client with Prisma Studio
+- **Authentication**: NextAuth.js with Google OAuth
+- **API**: Next.js API Routes with RESTful design
+
+### AI & External Services  
+- **AI Provider**: OpenAI API (GPT models)
+- **File Storage**: Local filesystem with upload management
+- **Authentication Provider**: Google OAuth 2.0
+
+### Development & Deployment
+- **Package Manager**: npm
+- **Linting**: ES Lint with Next.js configuration
+- **Type Checking**: TypeScript strict mode
+- **Build Tool**: Next.js with Turbopack (dev)
+- **Deployment**: Vercel-optimized with edge functions
+
+## 📚 Documentation
+
+Comprehensive documentation is available in the [`docs/`](./docs/) directory:
+
+- **[📋 Project Status](./docs/PROJECT_STATUS.md)** - Current features and completion status
+- **[🛠️ Environment Setup](./docs/ENVIRONMENT_SETUP.md)** - Complete setup guide
+- **[🔐 Google OAuth Setup](./docs/GOOGLE_OAUTH_SETUP.md)** - Authentication configuration
+- **[🚀 Vercel Deployment](./docs/VERCEL_DEPLOYMENT_GUIDE.md)** - Production deployment guide
+- **[🧹 Cleanup Summary](./docs/CLEANUP_SUMMARY.md)** - Project optimization history
 
 ## ⚡ Inicio Rápido
 
